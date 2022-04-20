@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["esnext"]
+  },
+  "include": [
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "vite.config.js",
+    "commitlint.config.js"
+  ]
+}

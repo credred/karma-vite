@@ -1,0 +1,5 @@
+.husky/_
+dist
+LICENSE.md
+.prettierignore
+pnpm-lock.yaml
