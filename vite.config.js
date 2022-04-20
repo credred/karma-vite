@@ -6,10 +6,16 @@ module.exports = defineConfig({
     target: 'node10',
     outDir: 'dist',
     lib: {
-      entry: path.resolve(__dirname, 'lib/main.ts'),
+      entry: path.resolve(__dirname, 'lib/index.ts'),
       name: 'karma-vite',
       formats: ['cjs'],
-      fileName: (format) => `karma-vite.${format}.js`,
+      fileName: () => `index.js`,
     },
+    minify: false,
+    rollupOptions: {
+      external: [
+        /node_modules/
+      ],
+    }
   },
 });

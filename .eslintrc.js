@@ -16,6 +16,10 @@ module.exports = defineConfig({
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
+  rules: {
+    'node/no-missing-import': "off",
+    '@typescript-eslint/consistent-type-imports': 'error',
+  },
   overrides: [
     {
       files: cjsTsconfig.include,
