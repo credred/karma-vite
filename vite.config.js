@@ -1,21 +1,13 @@
-const path = require('path');
+//@ts-check
 const { defineConfig } = require('vite');
 
 module.exports = defineConfig({
+  clearScreen: false,
   build: {
-    target: 'node10',
-    outDir: 'dist',
-    lib: {
-      entry: path.resolve(__dirname, 'lib/index.ts'),
-      name: 'karma-vite',
-      formats: ['cjs'],
-      fileName: () => `index.js`,
-    },
+    emptyOutDir: false,
     minify: false,
     rollupOptions: {
-      external: [
-        /node_modules/
-      ],
-    }
+      external: [/node_modules/],
+    },
   },
 });

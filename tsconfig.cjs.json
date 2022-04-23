@@ -6,7 +6,7 @@
   "include": [
     ".eslintrc.js",
     ".prettierrc.js",
-    "vite.config.js",
-    "commitlint.config.js"
+    "commitlint.config.js",
+    "**/*.js"
   ]
 }

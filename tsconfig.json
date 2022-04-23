@@ -7,5 +7,10 @@
     "types": ["vite/client"],
     "lib": ["esnext"]
   },
-  "include": ["lib/**/*.ts", "lib/**/*.d.ts"]
+  "include": [
+    "lib/**/*",
+    "examples/**/*.ts",
+    "examples/**/*.d.ts",
+    "examples/**/*.tsx"
+  ]
 }

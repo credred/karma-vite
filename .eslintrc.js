@@ -17,8 +17,13 @@ module.exports = defineConfig({
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
   ],
   rules: {
-    'node/no-missing-import': "off",
+    'node/no-missing-import': 'off',
     '@typescript-eslint/consistent-type-imports': 'error',
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
   },
   overrides: [
     {
@@ -31,6 +36,14 @@ module.exports = defineConfig({
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
+      },
+    },
+    {
+      files: ['examples/**/*'],
+      rules: {
+        // node/no-unpublished-import can't known sub node_modules, like examples/react/node_modules
+        'node/no-unpublished-import': 'off',
+        'node/no-unpublished-require': 'off',
       },
     },
   ],
