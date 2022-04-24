@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "noEmit": true,
     "types": ["vite/client"],
     "lib": ["esnext"]
   },

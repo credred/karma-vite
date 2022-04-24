@@ -2,8 +2,8 @@
 const path = require('path');
 const { build } = require('vite');
 const { cac } = require('cac');
-const { execSync } = require('child_process');
 const rimraf = require('rimraf');
+const dts = require('vite-plugin-dts');
 
 const cli = cac('vite');
 const outDir = 'dist';
@@ -13,8 +13,6 @@ cli
   .option('-w, --watch', `[boolean] rebuilds when modules have changed on disk`)
   .action((root, options) => {
     rimraf.sync(path.join(root ? path.resolve(root, outDir) : outDir, '/*'));
-    console.log('tsc building for declaration...');
-    execSync('npx tsc');
 
     void build({
       root,
@@ -28,6 +26,14 @@ cli
           fileName: () => 'index.js',
         },
       },
+      plugins: [
+        dts.default({
+          staticImport: true,
+          skipDiagnostics: false,
+          // The plugin will report `TS2742` error if set this field to true, but running tsc command will not report an error.
+          logDiagnostics: false,
+        }),
+      ],
     });
     void build({
       root,

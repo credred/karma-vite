@@ -9,4 +9,4 @@ export default {
   'middleware:vite': ['factory', middlewareFactory],
   'middleware:vite-before': ['factory', beforeMiddlewareFactory],
   vite: ['factory', viteServerFactory],
-};
+} as const;
