@@ -48,7 +48,7 @@ function resolveCoverageConfig(
 const viteServerFactory: DiFactory<
   [config: Config, executor: Executor],
   ViteProvider
-> = (config, executor) => {
+> = (config) => {
   const { basePath } = config;
   const belongToVitekarmaFiles = filterBelongToVitekarmaFiles(config.files);
   const viteProvider = createServer({
@@ -62,13 +62,14 @@ const viteServerFactory: DiFactory<
     },
   }).then((vite) => {
     viteProvider.value = vite;
-    const send = vite.ws.send.bind(vite.ws);
-    vite.ws.send = (payload: HMRPayload) => {
-      if (payload.type === 'full-reload') {
-        executor.schedule();
-      }
-      send(payload);
-    };
+    // temporary disable: vite enter infinite recerse update if set karma-coverage
+    // const send = vite.ws.send.bind(vite.ws);
+    // vite.ws.send = (payload: HMRPayload) => {
+    //   if (payload.type === 'full-reload') {
+    //     executor.schedule();
+    //   }
+    //   send(payload);
+    // };
     return vite;
   }) as ViteProvider;
   viteProvider.value = undefined;
