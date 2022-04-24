@@ -3,7 +3,8 @@ import type { AugmentedRequired } from './utils';
 import type { Logger as RawLogger } from 'log4js';
 import type { ServerResponse } from 'http';
 
-export type Config = AugmentedRequired<ConfigOptions, 'urlRoot'> & KarmaConfig;
+export type Config = AugmentedRequired<ConfigOptions, 'urlRoot' | 'basePath'> &
+  KarmaConfig;
 
 export interface Logger {
   create(name: string): RawLogger;

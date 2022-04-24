@@ -3,6 +3,7 @@ import type { HMRPayload, ViteDevServer } from 'vite';
 import type { DiFactory } from '../types/diFactory';
 import type { Config } from '../types/karma';
 import { createServer } from 'vite';
+import IstanbulPlugin from 'vite-plugin-istanbul';
 
 export interface ViteProvider extends Promise<ViteDevServer> {
   /**
@@ -32,6 +33,18 @@ function filterBelongToVitekarmaFiles(files?: (FilePattern | string)[]) {
   );
 }
 
+function resolveCoverageConfig(
+  config: Config,
+): Parameters<typeof IstanbulPlugin>[0] {
+  const { vite: { coverage } = {} } = config;
+  return {
+    include: coverage?.include,
+    exclude: coverage?.exclude,
+    extension: coverage?.extension,
+    cwd: coverage?.cwd ?? config.basePath,
+  };
+}
+
 const viteServerFactory: DiFactory<
   [config: Config, executor: Executor],
   ViteProvider
@@ -43,6 +56,7 @@ const viteServerFactory: DiFactory<
     server: {
       middlewareMode: 'ssr',
     },
+    plugins: [IstanbulPlugin(resolveCoverageConfig(config))],
     optimizeDeps: {
       entries: belongToVitekarmaFiles,
     },

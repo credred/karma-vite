@@ -27,6 +27,17 @@ module.exports = defineConfig({
   },
   overrides: [
     {
+      files: ['examples/**/*'],
+      parserOptions: {
+        project: './tsconfig.example.json',
+      },
+      rules: {
+        // node/no-unpublished-import can't known sub node_modules, like examples/react/node_modules
+        'node/no-unpublished-import': 'off',
+        'node/no-unpublished-require': 'off',
+      },
+    },
+    {
       files: cjsTsconfig.include,
       parserOptions: {
         project: './tsconfig.cjs.json',
@@ -36,17 +47,6 @@ module.exports = defineConfig({
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
-      },
-    },
-    {
-      files: ['examples/**/*'],
-      parserOptions: {
-        project: './tsconfig.example.json',
-      },
-      rules: {
-        // node/no-unpublished-import can't known sub node_modules, like examples/react/node_modules
-        'node/no-unpublished-import': 'off',
-        'node/no-unpublished-require': 'off',
       },
     },
   ],

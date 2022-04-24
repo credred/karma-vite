@@ -3,9 +3,14 @@ module.exports = function (config) {
   config.set({
     basePath: './',
     urlRoot: '/test',
-    plugins: ['karma-spec-reporter', 'karma-jasmine', 'karma-vite'],
+    plugins: [
+      'karma-spec-reporter',
+      'karma-jasmine',
+      'karma-vite',
+      'karma-coverage',
+    ],
     frameworks: ['jasmine', 'vite'],
-    reporters: ['spec'],
+    reporters: ['spec', 'coverage'],
     files: [
       {
         pattern: 'test/**/*.spec.tsx',

@@ -42,7 +42,8 @@
   },
   "homepage": "https://github.com/credred/karma-vite#readme",
   "dependencies": {
-    "connect": "^3.7.0"
+    "connect": "^3.7.0",
+    "vite-plugin-istanbul": "^2.7.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
