@@ -6,8 +6,5 @@ module.exports = defineConfig({
   build: {
     emptyOutDir: false,
     minify: false,
-    rollupOptions: {
-      external: [/node_modules/],
-    },
   },
 });

@@ -25,6 +25,13 @@ cli
           formats: ['cjs'],
           fileName: () => 'index.js',
         },
+        rollupOptions: {
+          external: [
+            /node_modules/,
+            // vite not support trigger Node.js core module as external by default https://github.com/vitejs/vite/issues/7821
+            'path',
+          ],
+        },
       },
       plugins: [
         dts.default({
