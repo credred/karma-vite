@@ -1,9 +1,9 @@
 import type { FilePattern } from 'karma';
 import type { HMRPayload, ViteDevServer } from 'vite';
+import { createServer, mergeConfig } from 'vite';
 import type { DiFactory } from '../types/diFactory';
 import type { Config } from '../types/karma';
 import path from 'path';
-import { createServer } from 'vite';
 import IstanbulPlugin from 'vite-plugin-istanbul';
 import { COVERAGE_DIR } from '../constants';
 
@@ -54,7 +54,7 @@ function resolveIstanbulPluginConfig(
   };
 }
 
-function resolveCoverageReporteDir(config: Config) {
+function resolveCoverageReportDir(config: Config) {
   interface ConfigForCoverageReport {
     coverageReporter?: {
       dir?: string;
@@ -71,6 +71,83 @@ function resolveCoverageReporteDir(config: Config) {
   return hardDir || fallbackDir || COVERAGE_DIR;
 }
 
+interface ViteDevServerInternal extends Omit<ViteDevServer, 'restart'> {
+  restart: (
+    forceOptimize?: boolean,
+  ) => Promise<ViteDevServerInternal | undefined>;
+  _forceOptimizeOnRestart: boolean;
+  _restartPromise?: Promise<ViteDevServerInternal | undefined>;
+}
+
+function rewriteViteServerRestart(
+  server: ViteDevServerInternal,
+  oldestServer = server,
+) {
+  server.restart = (forceOptimize?: boolean) => {
+    if (!server._restartPromise) {
+      server._forceOptimizeOnRestart = !!forceOptimize;
+      server._restartPromise = restartViteServer(server, oldestServer).finally(
+        () => {
+          server._restartPromise = undefined;
+          server._forceOptimizeOnRestart = false;
+        },
+      );
+    }
+    return server._restartPromise;
+  };
+}
+
+/**
+ *
+ * @param oldestServer keep oldestServer property same as latest server property.
+ * so user can always using the server which is created manually by createServer with safety
+ */
+async function restartViteServer(
+  server: ViteDevServerInternal,
+  oldestServer: ViteDevServerInternal,
+) {
+  await server.close();
+
+  let newServer = undefined;
+  try {
+    let inlineConfig = server.config.inlineConfig;
+    if (server._forceOptimizeOnRestart) {
+      inlineConfig = mergeConfig(inlineConfig, {
+        server: {
+          force: true,
+        },
+      });
+    }
+    newServer = (await createServer(inlineConfig)) as ViteDevServerInternal;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    server.config.logger.error(err.message, {
+      timestamp: true,
+    });
+    return;
+  }
+
+  for (const key in newServer) {
+    if (key === '_restartPromise') {
+      // prevent new server `restart` function from calling
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      newServer[key] = oldestServer[key];
+    } else if (key !== 'app') {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      oldestServer[key] = newServer[key];
+    }
+  }
+
+  server.config.logger.info('server restarted.', { timestamp: true });
+
+  // new server (the current server) can restart now
+  newServer._restartPromise = undefined;
+
+  return newServer;
+}
+
 const viteServerFactory: DiFactory<
   [config: Config, executor: Executor],
   ViteProvider
@@ -82,7 +159,7 @@ const viteServerFactory: DiFactory<
     server: {
       middlewareMode: 'ssr',
       watch: {
-        ignored: [path.resolve(resolveCoverageReporteDir(config), '**')],
+        ignored: [path.resolve(resolveCoverageReportDir(config), '**')],
       },
     },
     plugins: [
@@ -94,18 +171,36 @@ const viteServerFactory: DiFactory<
     },
   }).then((vite) => {
     viteProvider.value = vite;
-    const send = vite.ws.send.bind(vite.ws);
-    vite.ws.send = (payload: HMRPayload) => {
-      if (
-        payload.type === 'full-reload' ||
-        payload.type === 'update' ||
-        payload.type === 'prune' ||
-        payload.type === 'custom'
-      ) {
-        executor.schedule();
-      }
-      send(payload);
+    const interceptViteSend = (server: ViteDevServerInternal) => {
+      const send = server.ws.send.bind(server.ws);
+      server.ws.send = (payload: HMRPayload) => {
+        if (
+          payload.type === 'full-reload' ||
+          payload.type === 'update' ||
+          payload.type === 'prune' ||
+          payload.type === 'custom'
+        ) {
+          executor.schedule();
+        }
+        send(payload);
+      };
     };
+    const interceptViteRestart = (server: ViteDevServerInternal) => {
+      const restart = server.restart.bind(server);
+      server.restart = async () => {
+        const newServer = await restart();
+        if (newServer) {
+          rewriteViteServerRestart(newServer, vite as ViteDevServerInternal);
+          interceptViteSend(newServer);
+          interceptViteRestart(newServer);
+          executor.schedule();
+        }
+        return newServer;
+      };
+    };
+    rewriteViteServerRestart(vite as ViteDevServerInternal);
+    interceptViteSend(vite as ViteDevServerInternal);
+    interceptViteRestart(vite as ViteDevServerInternal);
     return vite;
   }) as ViteProvider;
   viteProvider.value = undefined;

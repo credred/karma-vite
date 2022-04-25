@@ -85,7 +85,9 @@ const middlewareFactory: DiFactory<
 
   handler.use(adjustPrefixMiddleware(`${urlRoot}base/`, vite.config.base));
   handler.use(viteClientMiddleware(vite, urlRoot, serveFile));
-  handler.use(vite.middlewares);
+  handler.use((req, res, next) => {
+    vite.middlewares(req, res, next);
+  });
   handler.use(restorePrefixMiddleware(vite.config.base, `${urlRoot}base/`));
 
   return handler;
