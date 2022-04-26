@@ -11,7 +11,8 @@ export interface KarmaViteConfig {
    */
   config: UserConfigExport;
   /**
-   * @description The config will only take effect after using karma coverage reporter like karma-coverage
+   * @description The plugin can reporte coverage,
+   * but it will only take effect after using karma coverage reporter like karma-coverage
    *
    * power by vite-plugin-istanbul.
    * @see https://github.com/ifaxity/vite-plugin-istanbul
