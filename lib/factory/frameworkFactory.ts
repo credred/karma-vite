@@ -12,6 +12,17 @@ const frameworkFactory: DiFactory<
       middleware: (config.middleware || []).concat(['vite']),
     });
   }
+  config.files = config.files?.map((file) => {
+    if (typeof file === 'object' && file.vite) {
+      return {
+        ...file,
+        type: 'module',
+        watched: false,
+        served: false,
+      };
+    }
+    return file;
+  });
   return vite;
 };
 
