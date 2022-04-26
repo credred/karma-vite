@@ -1,8 +1,15 @@
+import type { UserConfigExport } from 'vite';
+
 export interface KarmaViteConfig {
   /**
    * @default true
    */
   autoInit?: boolean;
+  /**
+   * vite server configuration
+   * @see https://vitejs.dev/config/
+   */
+  config: UserConfigExport;
   /**
    * @description The config will only take effect after using karma coverage reporter like karma-coverage
    *

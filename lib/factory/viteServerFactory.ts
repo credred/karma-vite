@@ -1,5 +1,5 @@
 import type { FilePattern } from 'karma';
-import type { HMRPayload, ViteDevServer } from 'vite';
+import type { HMRPayload, UserConfig, ViteDevServer } from 'vite';
 import { createServer, mergeConfig } from 'vite';
 import type { DiFactory } from '../types/diFactory';
 import type { Config } from '../types/karma';
@@ -69,6 +69,18 @@ function resolveCoverageReportDir(config: Config) {
     (config as ConfigForCoverageReport)?.coverageIstanbulReporter?.dir;
 
   return hardDir || fallbackDir || COVERAGE_DIR;
+}
+
+async function resolveViteConfig(
+  inlineViteConfig: UserConfig,
+  config: Config,
+): Promise<UserConfig> {
+  let viteConfig = config.vite?.config;
+  if (!viteConfig) return inlineViteConfig;
+  if (typeof viteConfig === 'function') {
+    viteConfig = await viteConfig({ command: 'serve', mode: 'development' });
+  }
+  return mergeConfig(viteConfig, inlineViteConfig);
 }
 
 interface ViteDevServerInternal extends Omit<ViteDevServer, 'restart'> {
@@ -154,7 +166,7 @@ const viteServerFactory: DiFactory<
 > = (config, executor) => {
   const { basePath } = config;
   const belongToVitekarmaFiles = filterBelongToVitekarmaFiles(config.files);
-  const viteProvider = createServer({
+  const inlineViteConfig: UserConfig = {
     root: basePath,
     server: {
       middlewareMode: 'ssr',
@@ -169,40 +181,43 @@ const viteServerFactory: DiFactory<
     optimizeDeps: {
       entries: belongToVitekarmaFiles,
     },
-  }).then((vite) => {
-    viteProvider.value = vite;
-    const interceptViteSend = (server: ViteDevServerInternal) => {
-      const send = server.ws.send.bind(server.ws);
-      server.ws.send = (payload: HMRPayload) => {
-        if (
-          payload.type === 'full-reload' ||
-          payload.type === 'update' ||
-          payload.type === 'prune' ||
-          payload.type === 'custom'
-        ) {
-          executor.schedule();
-        }
-        send(payload);
+  };
+  const viteProvider = resolveViteConfig(inlineViteConfig, config)
+    .then(createServer)
+    .then((vite) => {
+      viteProvider.value = vite;
+      const interceptViteSend = (server: ViteDevServerInternal) => {
+        const send = server.ws.send.bind(server.ws);
+        server.ws.send = (payload: HMRPayload) => {
+          if (
+            payload.type === 'full-reload' ||
+            payload.type === 'update' ||
+            payload.type === 'prune' ||
+            payload.type === 'custom'
+          ) {
+            executor.schedule();
+          }
+          send(payload);
+        };
       };
-    };
-    const interceptViteRestart = (server: ViteDevServerInternal) => {
-      const restart = server.restart.bind(server);
-      server.restart = async () => {
-        const newServer = await restart();
-        if (newServer) {
-          rewriteViteServerRestart(newServer, vite as ViteDevServerInternal);
-          interceptViteSend(newServer);
-          interceptViteRestart(newServer);
-          executor.schedule();
-        }
-        return newServer;
+      const interceptViteRestart = (server: ViteDevServerInternal) => {
+        const restart = server.restart.bind(server);
+        server.restart = async () => {
+          const newServer = await restart();
+          if (newServer) {
+            rewriteViteServerRestart(newServer, vite as ViteDevServerInternal);
+            interceptViteSend(newServer);
+            interceptViteRestart(newServer);
+            executor.schedule();
+          }
+          return newServer;
+        };
       };
-    };
-    rewriteViteServerRestart(vite as ViteDevServerInternal);
-    interceptViteSend(vite as ViteDevServerInternal);
-    interceptViteRestart(vite as ViteDevServerInternal);
-    return vite;
-  }) as ViteProvider;
+      rewriteViteServerRestart(vite as ViteDevServerInternal);
+      interceptViteSend(vite as ViteDevServerInternal);
+      interceptViteRestart(vite as ViteDevServerInternal);
+      return vite;
+    }) as ViteProvider;
   viteProvider.value = undefined;
 
   return viteProvider;
