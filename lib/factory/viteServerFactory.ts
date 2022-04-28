@@ -1,11 +1,11 @@
-import type { FilePattern } from 'karma';
-import type { HMRPayload, UserConfig, ViteDevServer } from 'vite';
-import { createServer, mergeConfig } from 'vite';
-import type { DiFactory } from '../types/diFactory';
-import type { Config } from '../types/karma';
 import path from 'path';
+import { createServer, mergeConfig } from 'vite';
+import type { FilePattern } from 'karma';
 import IstanbulPlugin from 'vite-plugin-istanbul';
 import { COVERAGE_DIR } from '../constants';
+import type { HMRPayload, InlineConfig, ViteDevServer } from 'vite';
+import type { DiFactory } from '../types/diFactory';
+import type { Config } from '../types/karma';
 
 export interface ViteProvider extends Promise<ViteDevServer> {
   /**
@@ -72,14 +72,14 @@ function resolveCoverageReportDir(config: Config) {
 }
 
 async function resolveViteConfig(
-  inlineViteConfig: UserConfig,
+  inlineViteConfig: InlineConfig,
   config: Config,
-): Promise<UserConfig> {
+): Promise<InlineConfig> {
   let viteConfig = config.vite?.config;
   if (!viteConfig) return inlineViteConfig;
-  if (typeof viteConfig === 'function') {
-    viteConfig = await viteConfig({ command: 'serve', mode: 'development' });
-  }
+  viteConfig = await (typeof viteConfig === 'function'
+    ? (viteConfig = await viteConfig({ command: 'serve', mode: 'development' }))
+    : viteConfig);
   return mergeConfig(viteConfig, inlineViteConfig);
 }
 
@@ -166,7 +166,7 @@ const viteServerFactory: DiFactory<
 > = (config, executor) => {
   const { basePath } = config;
   const belongToVitekarmaFiles = filterBelongToVitekarmaFiles(config.files);
-  const inlineViteConfig: UserConfig = {
+  const inlineViteConfig: InlineConfig = {
     root: basePath,
     server: {
       middlewareMode: 'ssr',

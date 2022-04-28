@@ -1,4 +1,9 @@
-import type { UserConfigExport } from 'vite';
+import type { ConfigEnv, InlineConfig } from 'vite';
+
+export type InlineConfigExport =
+  | InlineConfig
+  | Promise<InlineConfig>
+  | ((env: ConfigEnv) => InlineConfig | Promise<InlineConfig>);
 
 export interface KarmaViteConfig {
   /**
@@ -9,7 +14,7 @@ export interface KarmaViteConfig {
    * vite server configuration
    * @see https://vitejs.dev/config/
    */
-  config: UserConfigExport;
+  config?: InlineConfigExport;
   /**
    * @description The plugin can reporte coverage,
    * but it will only take effect after using karma coverage reporter like karma-coverage
