@@ -57,11 +57,23 @@ function createViteDevServer(config?: ConfigOptions) {
     schedule,
   });
   executor.$inject = [];
+  const logger: DiFactory = () => ({
+    create: () => {
+      return {
+        info: jest.fn(),
+        debug: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      };
+    },
+  });
+  logger.$inject = [];
   const injector = new Injector([
     {
       config: ['value', mergedConfig],
       vite: ['factory', viteServerFactory],
       executor: ['factory', executor],
+      logger: ['factory', logger],
     },
   ]);
 
