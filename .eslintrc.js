@@ -49,6 +49,20 @@ module.exports = defineConfig({
         'node/no-unpublished-require': 'off',
       },
     },
+    {
+      files: ['test/**/*'],
+      parserOptions: {
+        project: './tsconfig.test.json',
+      },
+      env: {
+        jest: true,
+      },
+      extends: ['plugin:jest/recommended'],
+      rules: {
+        '@typescript-eslint/unbound-method': 'off',
+        'jest/unbound-method': 'error',
+      },
+    },
   ],
   ignorePatterns: ['dist/**', 'coverage/**'],
 });

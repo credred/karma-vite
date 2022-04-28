@@ -1,0 +1,17 @@
+const { pathsToModuleNameMapper } = require('ts-jest');
+const tsconfig = require('./tsconfig.test.json');
+
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsconfig: './tsconfig.test.json',
+    },
+  },
+  moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
+    prefix: '<rootDir>/',
+  }),
+  testMatch: ['<rootDir>/test/**/?*.spec.[jt]s?(x)'],
+  collectCoverageFrom: ['lib/**'],
+};
