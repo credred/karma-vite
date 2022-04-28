@@ -83,7 +83,8 @@ async function resolveViteConfig(
   return mergeConfig(viteConfig, inlineViteConfig);
 }
 
-interface ViteDevServerInternal extends Omit<ViteDevServer, 'restart'> {
+// export for test
+export interface ViteDevServerInternal extends Omit<ViteDevServer, 'restart'> {
   restart: (
     forceOptimize?: boolean,
   ) => Promise<ViteDevServerInternal | undefined>;
