@@ -1,9 +1,10 @@
 import path from 'path';
 import { createServer, mergeConfig } from 'vite';
-import type { FilePattern } from 'karma';
 import IstanbulPlugin from 'vite-plugin-istanbul';
 import { COVERAGE_DIR } from '../constants';
+import type { FilePattern } from 'karma';
 import type { HMRPayload, InlineConfig, ViteDevServer } from 'vite';
+import type { Logger as OriginLogger } from 'log4js';
 import type { DiFactory } from '../types/diFactory';
 import type { Config, Logger } from '../types/karma';
 
@@ -94,8 +95,10 @@ export interface ViteDevServerInternal extends Omit<ViteDevServer, 'restart'> {
 
 function rewriteViteServerRestart(
   server: ViteDevServerInternal,
-  oldestServer = server,
+  oldestServer: ViteDevServerInternal,
+  log: OriginLogger,
 ) {
+  log.debug('vite server restart method was rewritten');
   server.restart = (forceOptimize?: boolean) => {
     if (!server._restartPromise) {
       server._forceOptimizeOnRestart = !!forceOptimize;
@@ -186,13 +189,13 @@ const viteServerFactory: DiFactory<
   };
   const viteProvider = resolveViteConfig(inlineViteConfig, config)
     .then((config) => {
-      log.debug(`the createServer using resoved config: \n%O\n`, config);
+      log.debug(`using resolved config: \n%O\n`, config);
       return createServer(config);
     })
     .then((vite) => {
       viteProvider.value = vite;
       const interceptViteSend = (server: ViteDevServerInternal) => {
-        log.debug(`the wss send method of vite server intercepted`);
+        log.debug(`vite server ws send method was intercepted`);
         const send = server.ws.send.bind(server.ws);
         server.ws.send = (payload: HMRPayload) => {
           log.debug(
@@ -211,14 +214,17 @@ const viteServerFactory: DiFactory<
         };
       };
       const interceptViteRestart = (server: ViteDevServerInternal) => {
-        log.debug(`vite server restart method intercepted`);
+        log.debug(`vite server restart method was intercepted`);
         const restart = server.restart.bind(server);
         server.restart = async () => {
           const newServer = await restart();
           if (newServer) {
             log.debug('vite server restarted');
-            log.debug('vite server restart method was rewritten');
-            rewriteViteServerRestart(newServer, vite as ViteDevServerInternal);
+            rewriteViteServerRestart(
+              newServer,
+              vite as ViteDevServerInternal,
+              log,
+            );
             interceptViteSend(newServer);
             interceptViteRestart(newServer);
             executor.schedule();
@@ -226,8 +232,11 @@ const viteServerFactory: DiFactory<
           return newServer;
         };
       };
-      log.debug('vite server restart method was rewritten');
-      rewriteViteServerRestart(vite as ViteDevServerInternal);
+      rewriteViteServerRestart(
+        vite as ViteDevServerInternal,
+        vite as ViteDevServerInternal,
+        log,
+      );
       interceptViteSend(vite as ViteDevServerInternal);
       interceptViteRestart(vite as ViteDevServerInternal);
       return vite;

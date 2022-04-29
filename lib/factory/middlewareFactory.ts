@@ -24,7 +24,7 @@ const adjustPrefixMiddleware = (
     const url = req.url && cleanUrl(stripHost(req.url));
     if (url?.startsWith(originPrefix)) {
       req.url = url.replace(originPrefix, targetPrefix);
-      log.debug(`this request url was replaced by ${req.url} from ${url}`);
+      log.debug(`Url prefix rewritten: ${url} -> ${req.url}`);
       Reflect.defineProperty(req, REWRITE_KEY, {
         value: true,
         enumerable: false,
@@ -44,9 +44,7 @@ const restorePrefixMiddleware = (
 
     if (url !== undefined && req[REWRITE_KEY]) {
       req.url = url.replace(originPrefix, targetPrefix);
-      log.debug(
-        `this request url was replaced with adjustPrefixMiddleware, the url restored from ${url} to ${req.url}`,
-      );
+      log.debug(`Url prefix restored: ${url} -> ${req.url}`);
       Reflect.deleteProperty(req, REWRITE_KEY);
     }
     next();
@@ -66,7 +64,7 @@ const viteClientMiddleware = (
         const url = refererUrl.replace(urlRoot, '/');
         if (unwantedViteClientHtml.has(url)) {
           log.debug(
-            `this request want to get vite client which will be mock by karma-vite because the request referer do not need hmr`,
+            `${url} is requesting vite client which will be mock by karma-vite because the request referer do not need hmr`,
           );
           return serveFile(VITE_CLIENT_ENTRY, req.headers.range, res);
         }
@@ -97,17 +95,7 @@ const middlewareFactory: DiFactory<
   handler.use(adjustPrefixMiddleware(`${urlRoot}base/`, vite.config.base, log));
   handler.use(viteClientMiddleware(vite, urlRoot, serveFile, log));
   handler.use((req, res, next) => {
-    log.debug(
-      `this request is about to enter vite middlewares that url is ${
-        req.url || ''
-      }`,
-    );
     vite.middlewares(req, res, next);
-    log.debug(
-      `this request was not processed by vite middlewares that url is ${
-        req.url || ''
-      }`,
-    );
   });
   handler.use(
     restorePrefixMiddleware(vite.config.base, `${urlRoot}base/`, log),
