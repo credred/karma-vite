@@ -20,16 +20,14 @@ cli
         watch: options.watch,
         target: 'node10',
         outDir: outDir,
-        lib: {
-          entry: 'lib/index.ts',
-          formats: ['cjs'],
-          fileName: () => 'index.js',
-        },
+        // to achieve @rollup-node-resolve plugin effect
+        ssr: true,
         rollupOptions: {
+          input: 'lib/index.ts',
           external: [
-            /node_modules/,
-            // vite not support trigger Node.js core module as external by default https://github.com/vitejs/vite/issues/7821
-            'path',
+            // vite will auto collect externals from rollupOptions.input, but vite will delete the 'vite' text from
+            // collected externals. so we should manual declare this external.
+            'vite',
           ],
         },
       },
