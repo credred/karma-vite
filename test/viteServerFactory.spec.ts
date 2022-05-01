@@ -1,34 +1,5 @@
-const schedule = jest.fn();
-
-const restart = jest.fn();
-const close = jest.fn();
-const wsSend = jest.fn();
-const createServer = jest.fn(() =>
-  Promise.resolve({
-    restart,
-    close: close,
-    config: {
-      inlineConfig: {},
-      logger: {
-        info: jest.fn(),
-        error: jest.fn(),
-      },
-    },
-    ws: {
-      send: wsSend,
-    },
-  }),
-) as jest.Mock;
 const vitePluginIstanbul = jest.fn().mockReturnValue({
   name: 'vite:istanbul',
-});
-
-jest.mock('vite', () => {
-  const vite = jest.requireActual('vite');
-  return {
-    ...vite,
-    createServer,
-  };
 });
 jest.mock('vite-plugin-istanbul', () => {
   return {
@@ -44,6 +15,7 @@ import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
 import type { DiFactory } from '@/types/diFactory';
 import type { ConfigOptions } from 'karma';
 import { COVERAGE_DIR } from '@/constants';
+import { scheduleMock, restartMock, wsSendMock, createServerMock } from 'vite';
 
 function createViteDevServer(config?: ConfigOptions) {
   const mergedConfig = {
@@ -54,7 +26,7 @@ function createViteDevServer(config?: ConfigOptions) {
   };
 
   const executor: DiFactory = () => ({
-    schedule,
+    schedule: scheduleMock,
   });
   executor.$inject = [];
   const logger: DiFactory = () => ({
@@ -82,11 +54,11 @@ function createViteDevServer(config?: ConfigOptions) {
 }
 
 afterEach(() => {
-  restart.mockClear();
-  wsSend.mockClear();
-  createServer.mockClear();
+  restartMock.mockClear();
+  wsSendMock.mockClear();
+  createServerMock.mockClear();
   vitePluginIstanbul.mockClear();
-  schedule.mockClear();
+  scheduleMock.mockClear();
 });
 
 describe('viteServerFactory', () => {
@@ -118,7 +90,7 @@ describe('viteServerFactory', () => {
           config: userConfig,
         },
       });
-      expect(createServer.mock.calls[0][0]).toEqual(
+      expect(createServerMock.mock.calls[0][0]).toEqual(
         expect.objectContaining(userConfig),
       );
     });
@@ -134,7 +106,7 @@ describe('viteServerFactory', () => {
         },
       });
 
-      expect(createServer.mock.calls[0][0]).toEqual(
+      expect(createServerMock.mock.calls[0][0]).toEqual(
         expect.objectContaining(userConfig),
       );
     });
@@ -148,7 +120,7 @@ describe('viteServerFactory', () => {
           { pattern: 'files4.ts', served: true },
         ],
       });
-      const viteConfig = createServer.mock.calls[0][0];
+      const viteConfig = createServerMock.mock.calls[0][0];
       const entries = viteConfig.optimizeDeps.entries;
       expect(entries).toEqual(['files2.ts']);
     });
@@ -161,7 +133,7 @@ describe('viteServerFactory', () => {
           },
         },
       });
-      const viteConfig = createServer.mock.calls[0][0];
+      const viteConfig = createServerMock.mock.calls[0][0];
       expect(vitePluginIstanbul).toBeCalled();
       expect(viteConfig.plugins).toEqual(
         expect.objectContaining([{ name: 'vite:istanbul' }]),
@@ -172,7 +144,7 @@ describe('viteServerFactory', () => {
       await createViteDevServer({
         reporters: ['coverage'],
       });
-      const viteConfig = createServer.mock.calls[0][0];
+      const viteConfig = createServerMock.mock.calls[0][0];
       expect(vitePluginIstanbul).toBeCalled();
       expect(viteConfig.plugins).toEqual(
         expect.objectContaining([{ name: 'vite:istanbul' }]),
@@ -222,7 +194,7 @@ describe('viteServerFactory', () => {
           },
         },
       });
-      const viteConfig = createServer.mock.calls[0][0];
+      const viteConfig = createServerMock.mock.calls[0][0];
       expect(viteConfig.server.watch.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
@@ -236,7 +208,7 @@ describe('viteServerFactory', () => {
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
-      let lastViteConfig = createServer.mock.calls[0][0];
+      let lastViteConfig = createServerMock.mock.calls[0][0];
       expect(lastViteConfig.server.watch.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
@@ -247,13 +219,13 @@ describe('viteServerFactory', () => {
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
-      lastViteConfig = createServer.mock.calls[1][0];
+      lastViteConfig = createServerMock.mock.calls[1][0];
       expect(lastViteConfig.server.watch.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
 
       await createViteDevServer();
-      lastViteConfig = createServer.mock.calls[2][0];
+      lastViteConfig = createServerMock.mock.calls[2][0];
       expect(lastViteConfig.server.watch.ignored).toEqual(
         expect.arrayContaining([path.resolve(COVERAGE_DIR, '**')]),
       );
@@ -279,10 +251,10 @@ describe('viteServerFactory', () => {
     });
 
     it('the createServer method should not be called again if the previous restart method did not complete', async () => {
-      createServer.mockClear();
+      createServerMock.mockClear();
       void vite.restart();
       await vite.restart();
-      expect(createServer).toBeCalledTimes(1);
+      expect(createServerMock).toBeCalledTimes(1);
     });
   });
 
@@ -293,26 +265,26 @@ describe('viteServerFactory', () => {
     });
 
     it('after the ws.send method is called with "update" type payload, the executor.schedule method should be called', () => {
-      expect(schedule).not.toBeCalled();
+      expect(scheduleMock).not.toBeCalled();
       vite.ws.send({ type: 'full-reload' });
-      expect(schedule).toBeCalled();
+      expect(scheduleMock).toBeCalled();
     });
 
     it('after the vite server restarted, the executor.schedule method should be called', async () => {
       await vite.restart();
-      expect(schedule).toBeCalled();
+      expect(scheduleMock).toBeCalled();
     });
 
     it('after the vite server restart, the newServer should be intercepte again', async () => {
       let newServer = await vite.restart();
-      expect(schedule).toBeCalledTimes(1);
+      expect(scheduleMock).toBeCalledTimes(1);
       newServer?.ws.send({ type: 'full-reload' });
-      expect(schedule).toBeCalledTimes(2);
+      expect(scheduleMock).toBeCalledTimes(2);
 
       newServer = await newServer?.restart();
-      expect(schedule).toBeCalledTimes(3);
+      expect(scheduleMock).toBeCalledTimes(3);
       newServer?.ws.send({ type: 'full-reload' });
-      expect(schedule).toBeCalledTimes(4);
+      expect(scheduleMock).toBeCalledTimes(4);
     });
   });
 });
