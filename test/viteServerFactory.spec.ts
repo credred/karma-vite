@@ -90,12 +90,21 @@ afterEach(() => {
 });
 
 describe('viteServerFactory', () => {
-  it('return value should be promise with value property', async () => {
+  it('return an object which should be promise with value property', async () => {
     const vitePromise = createViteDevServer();
     expect(typeof vitePromise.then).toBe('function');
     expect(vitePromise.value).toBe(undefined);
     const vite = await vitePromise;
     expect(vitePromise.value).toBe(vite);
+  });
+
+  // because of we update only oldest vite server perperty
+  it('the value property of returns object should not change even if vite restarted', async () => {
+    const vitePromise = createViteDevServer();
+    await vitePromise;
+    const oldestViteServer = vitePromise.value;
+    await oldestViteServer.restart();
+    expect(oldestViteServer).toBe(vitePromise.value);
   });
 
   describe('createServer config', () => {
