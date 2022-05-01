@@ -15,7 +15,7 @@ import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
 import type { DiFactory } from '@/types/diFactory';
 import type { ConfigOptions } from 'karma';
 import { COVERAGE_DIR } from '@/constants';
-import { scheduleMock, restartMock, wsSendMock, createServerMock } from 'vite';
+import { scheduleMock, createServerMock } from 'vite';
 
 function createViteDevServer(config?: ConfigOptions) {
   const mergedConfig = {
@@ -52,14 +52,6 @@ function createViteDevServer(config?: ConfigOptions) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (injector.invoke as any)(viteServerFactory as any);
 }
-
-afterEach(() => {
-  restartMock.mockClear();
-  wsSendMock.mockClear();
-  createServerMock.mockClear();
-  vitePluginIstanbul.mockClear();
-  scheduleMock.mockClear();
-});
 
 describe('viteServerFactory', () => {
   it('return an object which should be promise with value property', async () => {

@@ -9,6 +9,7 @@ module.exports = {
       tsconfig: './tsconfig.test.json',
     },
   },
+  clearMocks: true,
   moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
