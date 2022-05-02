@@ -9,48 +9,16 @@ jest.mock('vite-plugin-istanbul', () => {
 });
 
 import path from 'path';
-import viteServerFactory from '@/factory/viteServerFactory';
-import { Injector } from 'di';
+import type viteServerFactory from '@/factory/viteServerFactory';
 import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
-import type { DiFactory } from '@/types/diFactory';
 import type { ConfigOptions } from 'karma';
 import { COVERAGE_DIR } from '@/constants';
 import { scheduleMock, createServerMock } from './_utils/mockFn';
+import createInjector from './_utils/createInjector';
 
 function createViteDevServer(config?: ConfigOptions) {
-  const mergedConfig = {
-    basePath: './',
-    urlRoot: '/',
-    reporters: [],
-    ...config,
-  };
-
-  const executor: DiFactory = () => ({
-    schedule: scheduleMock,
-  });
-  executor.$inject = [];
-  const logger: DiFactory = () => ({
-    create: () => {
-      return {
-        info: jest.fn(),
-        debug: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-      };
-    },
-  });
-  logger.$inject = [];
-  const injector = new Injector([
-    {
-      config: ['value', mergedConfig],
-      vite: ['factory', viteServerFactory],
-      executor: ['factory', executor],
-      logger: ['factory', logger],
-    },
-  ]);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (injector.invoke as any)(viteServerFactory as any);
+  const injector = createInjector(config);
+  return injector.get<ReturnType<typeof viteServerFactory>>('vite');
 }
 
 describe('viteServerFactory', () => {
@@ -67,7 +35,7 @@ describe('viteServerFactory', () => {
     const vitePromise = createViteDevServer();
     await vitePromise;
     const oldestViteServer = vitePromise.value;
-    await oldestViteServer.restart();
+    await oldestViteServer?.restart();
     expect(oldestViteServer).toBe(vitePromise.value);
   });
 
@@ -227,7 +195,7 @@ describe('viteServerFactory', () => {
   describe('rewrite vite server restart method', () => {
     let vite: ViteDevServerInternal;
     beforeEach(async () => {
-      vite = await createViteDevServer();
+      vite = (await createViteDevServer()) as ViteDevServerInternal;
     });
     it('restart method should return new vite server after it was rewritten', async () => {
       const newVite = await vite.restart();
@@ -253,7 +221,7 @@ describe('viteServerFactory', () => {
   describe('vite server intercept', () => {
     let vite: ViteDevServerInternal;
     beforeEach(async () => {
-      vite = await createViteDevServer();
+      vite = (await createViteDevServer()) as ViteDevServerInternal;
     });
 
     it('after the ws.send method is called with "update" type payload, the executor.schedule method should be called', () => {

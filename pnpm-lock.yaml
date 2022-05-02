@@ -7,9 +7,9 @@ importers:
       '@commitlint/cli': ^16.2.3
       '@commitlint/config-conventional': ^16.2.1
       '@types/connect': ^3.4.35
-      '@types/di': ^0.0.1
       '@types/jest': ^27.4.1
       '@types/karma': ^6.3.3
+      '@types/lodash': ^4.14.182
       '@types/supertest': ^2.0.12
       '@typescript-eslint/eslint-plugin': ^5.20.0
       '@typescript-eslint/parser': ^5.20.0
@@ -24,6 +24,7 @@ importers:
       husky: ^7.0.4
       jest: ^27.5.1
       lint-staged: ^12.3.8
+      lodash: ^4.17.21
       log4js: ^6.4.5
       prettier: ^2.6.2
       rimraf: ^3.0.2
@@ -40,9 +41,9 @@ importers:
       '@commitlint/cli': 16.2.3
       '@commitlint/config-conventional': 16.2.1
       '@types/connect': 3.4.35
-      '@types/di': 0.0.1
       '@types/jest': 27.4.1
       '@types/karma': 6.3.3
+      '@types/lodash': 4.14.182
       '@types/supertest': 2.0.12
       '@typescript-eslint/eslint-plugin': 5.20.0_b9ac9b5656ce5dffade639fcf5e491bf
       '@typescript-eslint/parser': 5.20.0_eslint@8.13.0+typescript@4.6.3
@@ -56,6 +57,7 @@ importers:
       husky: 7.0.4
       jest: 27.5.1
       lint-staged: 12.3.8
+      lodash: 4.17.21
       log4js: 6.4.5
       prettier: 2.6.2
       rimraf: 3.0.2
@@ -1122,10 +1124,6 @@ packages:
     resolution: {integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw==}
     dev: true
 
-  /@types/di/0.0.1:
-    resolution: {integrity: sha512-fViW9VZqBa02UCedIiZMJs5LEBDJEx9m25vWuguEXuhEmiQK6J74eSO6+543I/4mHisjGCPHZLucOP0GdLKVwg==}
-    dev: true
-
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
@@ -1170,6 +1168,10 @@ packages:
       log4js: 6.4.5
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
     dev: true
 
   /@types/minimist/1.2.2:

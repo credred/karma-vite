@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "types": ["jest"],
+    "types": ["jest", "lodash"],
     "paths": {
       "@/*": ["lib/*"]
     },

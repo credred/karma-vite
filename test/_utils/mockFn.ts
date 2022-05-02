@@ -20,3 +20,5 @@ export const createServerMock = jest.fn((config: InlineConfig) =>
     },
   }),
 );
+
+export const serveFileMock = jest.fn();
