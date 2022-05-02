@@ -15,7 +15,7 @@ import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
 import type { DiFactory } from '@/types/diFactory';
 import type { ConfigOptions } from 'karma';
 import { COVERAGE_DIR } from '@/constants';
-import { scheduleMock, createServerMock } from 'vite';
+import { scheduleMock, createServerMock } from './_utils/mockFn';
 
 function createViteDevServer(config?: ConfigOptions) {
   const mergedConfig = {
@@ -113,7 +113,7 @@ describe('viteServerFactory', () => {
         ],
       });
       const viteConfig = createServerMock.mock.calls[0][0];
-      const entries = viteConfig.optimizeDeps.entries;
+      const entries = viteConfig.optimizeDeps?.entries;
       expect(entries).toEqual(['files2.ts']);
     });
 
@@ -187,7 +187,7 @@ describe('viteServerFactory', () => {
         },
       });
       const viteConfig = createServerMock.mock.calls[0][0];
-      expect(viteConfig.server.watch.ignored).toEqual(
+      expect(viteConfig.server?.watch?.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
     });
@@ -201,7 +201,7 @@ describe('viteServerFactory', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
       let lastViteConfig = createServerMock.mock.calls[0][0];
-      expect(lastViteConfig.server.watch.ignored).toEqual(
+      expect(lastViteConfig.server?.watch?.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
 
@@ -212,13 +212,13 @@ describe('viteServerFactory', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
       lastViteConfig = createServerMock.mock.calls[1][0];
-      expect(lastViteConfig.server.watch.ignored).toEqual(
+      expect(lastViteConfig.server?.watch?.ignored).toEqual(
         expect.arrayContaining([path.resolve(coverageDir, '**')]),
       );
 
       await createViteDevServer();
       lastViteConfig = createServerMock.mock.calls[2][0];
-      expect(lastViteConfig.server.watch.ignored).toEqual(
+      expect(lastViteConfig.server?.watch?.ignored).toEqual(
         expect.arrayContaining([path.resolve(COVERAGE_DIR, '**')]),
       );
     });
