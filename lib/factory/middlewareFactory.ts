@@ -1,6 +1,10 @@
 import connect from 'connect';
 import stripHost, { cleanUrl } from '../utils';
-import { REWRITE_KEY, VITE_CLIENT_ENTRY } from '../constants';
+import {
+  REWRITE_URL_KEY,
+  VITE_CLIENT_ENTRY,
+  VITE_FS_PREFIX,
+} from '../constants';
 import type { Connect, ViteDevServer } from 'vite';
 import type { Logger as OriginLogger } from 'log4js';
 import type { DiFactory } from '../types/diFactory';
@@ -12,40 +16,49 @@ const unwantedViteClientHtml = new Set([
 ]);
 
 type IncomingMessage = Connect.IncomingMessage & {
-  [REWRITE_KEY]?: boolean;
+  [REWRITE_URL_KEY]?: [originPrefix: string, targetPrefix: string];
 };
 
 const adjustPrefixMiddleware = (
-  originPrefix: string,
-  targetPrefix: string,
+  urlRoot: string,
+  base: string,
   log: OriginLogger,
 ): Connect.NextHandleFunction => {
   return (req: IncomingMessage, res, next) => {
     const url = req.url && cleanUrl(stripHost(req.url));
-    if (url?.startsWith(originPrefix)) {
+    const basePrefix = `${urlRoot}base/`;
+    const absolutePrefix = `${urlRoot}absolute/`;
+    let originPrefix, targetPrefix;
+    if (url?.startsWith(basePrefix)) {
+      originPrefix = basePrefix;
+      targetPrefix = base;
+    } else if (url?.startsWith(absolutePrefix)) {
+      originPrefix = absolutePrefix;
+      targetPrefix = VITE_FS_PREFIX;
+    }
+    if (url && originPrefix && targetPrefix) {
       req.url = url.replace(originPrefix, targetPrefix);
-      log.debug(`Url prefix rewritten: ${url} -> ${req.url}`);
-      Reflect.defineProperty(req, REWRITE_KEY, {
-        value: true,
+      Reflect.defineProperty(req, REWRITE_URL_KEY, {
+        value: [absolutePrefix, targetPrefix],
         enumerable: false,
       });
+      log.debug(`Url prefix rewritten: ${url} -> ${req.url}`);
     }
     next();
   };
 };
 
 const restorePrefixMiddleware = (
-  originPrefix: string,
-  targetPrefix: string,
   log: OriginLogger,
 ): Connect.NextHandleFunction => {
   return (req: IncomingMessage, res, next) => {
     const url = req.url && cleanUrl(stripHost(req.url));
-
-    if (url !== undefined && req[REWRITE_KEY]) {
+    const rewriteValue = req[REWRITE_URL_KEY];
+    if (url !== undefined && rewriteValue) {
+      const [originPrefix, targetPrefix] = rewriteValue;
       req.url = url.replace(originPrefix, targetPrefix);
       log.debug(`Url prefix restored: ${url} -> ${req.url}`);
-      Reflect.deleteProperty(req, REWRITE_KEY);
+      Reflect.deleteProperty(req, REWRITE_URL_KEY);
     }
     next();
   };
@@ -92,14 +105,12 @@ const middlewareFactory: DiFactory<
 
   const handler = connect();
 
-  handler.use(adjustPrefixMiddleware(`${urlRoot}base/`, vite.config.base, log));
+  handler.use(adjustPrefixMiddleware(urlRoot, vite.config.base, log));
   handler.use(viteClientMiddleware(vite, urlRoot, serveFile, log));
   handler.use((req, res, next) => {
     vite.middlewares(req, res, next);
   });
-  handler.use(
-    restorePrefixMiddleware(vite.config.base, `${urlRoot}base/`, log),
-  );
+  handler.use(restorePrefixMiddleware(log));
 
   return handler;
 };
