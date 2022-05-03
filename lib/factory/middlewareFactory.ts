@@ -34,7 +34,7 @@ const adjustPrefixMiddleware = (
       targetPrefix = base;
     } else if (url?.startsWith(absolutePrefix)) {
       originPrefix = absolutePrefix;
-      targetPrefix = VITE_FS_PREFIX;
+      targetPrefix = `${base.slice(0, -1)}${VITE_FS_PREFIX}`;
     }
     if (url && originPrefix && targetPrefix) {
       req.url = url.replace(originPrefix, targetPrefix);
