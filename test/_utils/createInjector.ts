@@ -21,7 +21,7 @@ const logger: DiFactory = () => ({
 });
 logger.$inject = [];
 
-const serveFile: DiFactory = () => serveFileMock();
+const serveFile: DiFactory = () => serveFileMock;
 serveFile.$inject = [];
 
 const commonConfig = {
