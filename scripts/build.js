@@ -5,6 +5,7 @@ const { cac } = require('cac');
 const rimraf = require('rimraf');
 const dts = require('vite-plugin-dts');
 const chalk = require('chalk');
+const patchTypes = require('./patchTypes');
 
 const cli = cac('vite');
 
@@ -61,6 +62,9 @@ cli
           ssr: true,
           rollupOptions: {
             input: 'lib/index.ts',
+            output: {
+              exports: 'default',
+            },
             external: [
               // vite will auto collect externals from rollupOptions.input, but vite will delete the 'vite' text from
               // collected externals. so we should manual declare this external.
@@ -75,6 +79,10 @@ cli
               skipDiagnostics: false,
               // The plugin will report `TS2742` error if set this field to true, but running tsc command will not report an error.
               logDiagnostics: false,
+              afterBuild() {
+                const file = path.resolve(__dirname, '../dist/index.d.ts');
+                patchTypes(file);
+              },
             }),
         ],
       }),

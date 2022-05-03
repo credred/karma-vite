@@ -48,12 +48,15 @@
     "vite-plugin-istanbul": "^2.7.1"
   },
   "devDependencies": {
+    "@babel/parser": "^7.17.10",
+    "@babel/types": "^7.17.10",
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
     "@types/connect": "^3.4.35",
     "@types/jest": "^27.4.1",
     "@types/karma": "^6.3.3",
     "@types/lodash": "^4.14.182",
+    "@types/node": "^17.0.31",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.20.0",
     "@typescript-eslint/parser": "^5.20.0",
@@ -69,6 +72,7 @@
     "lint-staged": "^12.3.8",
     "lodash": "^4.17.21",
     "log4js": "^6.4.5",
+    "magic-string": "^0.26.1",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
     "supertest": "^6.2.3",
