@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`viteClientMock export correctly 1`] = `
+Object {
+  "ErrorOverlay": [Function],
+  "createHotContext": [Function],
+  "injectQuery": [Function],
+  "removeStyle": [Function],
+  "updateStyle": [Function],
+}
+`;

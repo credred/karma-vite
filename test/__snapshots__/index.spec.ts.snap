@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`repo output export correctly 1`] = `
+Object {
+  "default": Object {
+    "framework:vite": Array [
+      "factory",
+      [Function],
+    ],
+    "middleware:vite": Array [
+      "factory",
+      [Function],
+    ],
+    "middleware:vite-before": Array [
+      "factory",
+      [Function],
+    ],
+    "vite": Array [
+      "factory",
+      [Function],
+    ],
+  },
+}
+`;
