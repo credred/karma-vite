@@ -56,7 +56,7 @@ cli
       mergeConfig(commonConfig, {
         root,
         build: {
-          target: 'node10',
+          target: 'node12',
           ...buildOptions,
           // to achieve @rollup-node-resolve plugin effect
           ssr: true,
