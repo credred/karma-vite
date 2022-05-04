@@ -186,7 +186,11 @@ const viteServerFactory: DiFactory<
             payload.type,
           );
           if (
-            payload.type === 'full-reload' ||
+            // payload.path is '*' only after html changes, we don't need to listen for html file changes
+            // and this can load to infinite loops.
+            // for example, coverage reporter will generate html files after test. vite listens to the html being generated
+            // and sends the full-reload message. if we schedule test again, coverage reporter will generate html files again...
+            (payload.type === 'full-reload' && payload.path !== '*') ||
             payload.type === 'update' ||
             payload.type === 'prune' ||
             payload.type === 'custom'
