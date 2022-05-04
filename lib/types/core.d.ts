@@ -7,11 +7,12 @@ export type InlineConfigExport =
 
 export interface KarmaViteConfig {
   /**
+   * @description auto config vite middleware
    * @default true
    */
   autoInit?: boolean;
   /**
-   * vite server configuration
+   * @description vite server configuration
    * @see https://vitejs.dev/config/
    */
   config?: InlineConfigExport;

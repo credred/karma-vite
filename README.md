@@ -35,22 +35,27 @@ The plugin works out of the box. But you may need to customize some configuratio
 ```javascript
 // karma.conf.js
 module.exports = (config) => {
-  /**
-   * @default true
-   */
-  autoInit: true;
-  /**
-   * vite server configuration
-   * @see https://vitejs.dev/config/
-   */
-  config: {
-  }
-  /**
-   * @description The config will only take effect after using karma coverage reporter like karma-coverage.
-   * see the typescript declaration below for more detail.
-   */
-  coverage: {
-  }
+  config.set({
+    vite: {
+      /**
+       * @description auto config vite middleware
+       * @default true
+       */
+      autoInit: true;
+      /**
+       * vite server configuration
+       * @see https://vitejs.dev/config/
+       */
+      config: {
+      },
+      /**
+       * @description The config will only take effect after using karma coverage reporter like karma-coverage.
+       * see the typescript declaration below for more detail.
+       */
+      coverage: {
+      },
+    },
+  });
 };
 ```
 
@@ -59,6 +64,7 @@ module.exports = (config) => {
 ```typescript
 export interface KarmaViteConfig {
   /**
+   * @description auto config vite middleware
    * @default true
    */
   autoInit?: boolean;
