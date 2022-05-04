@@ -9,12 +9,16 @@ import { ref } from 'vue';
 
 const props = defineProps<{
   onClick?: Function;
-  forUnCoverageProps?: boolean;
+  forRealUnCoveredProps?: boolean;
 }>();
 
-if (props.forUnCoverageProps) {
-  console.log('the line wall not be covered');
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
+// for coverage report some line are not covered
+if (props.forRealUnCoveredProps) {
+  noop();
 } else {
-  console.log('the line will be covered');
+  noop();
 }
 </script>

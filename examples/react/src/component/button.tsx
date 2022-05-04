@@ -3,14 +3,18 @@ import React from 'react';
 export interface ButtonProps {
   onClick: React.MouseEventHandler<HTMLElement>;
   children?: React.ReactNode;
-  forunCoverageProps?: boolean;
+  forRealUnCoveredProps?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
 const Button: React.FC<ButtonProps> = (props) => {
-  if (props.forunCoverageProps) {
-    console.log('the line wall not be covered');
+  // for coverage report some line are not covered
+  if (props.forRealUnCoveredProps) {
+    noop();
   } else {
-    console.log('the line will be covered');
+    noop();
   }
   return <button onClick={props.onClick}>{props.children}</button>;
 };
