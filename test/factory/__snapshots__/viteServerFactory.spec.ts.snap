@@ -16,11 +16,6 @@ Object {
   "root": "./",
   "server": Object {
     "middlewareMode": "ssr",
-    "watch": Object {
-      "ignored": Array [
-        "/home/qiufan/front/github/karma-vite/coverage/**",
-      ],
-    },
   },
 }
 `;
@@ -41,11 +36,6 @@ Object {
   "root": "./",
   "server": Object {
     "middlewareMode": "ssr",
-    "watch": Object {
-      "ignored": Array [
-        "/home/qiufan/front/github/karma-vite/coverage/**",
-      ],
-    },
   },
 }
 `;

@@ -8,11 +8,9 @@ jest.mock('vite-plugin-istanbul', () => {
   };
 });
 
-import path from 'path';
 import type viteServerFactory from '@/factory/viteServerFactory';
 import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
 import type { ConfigOptions } from 'karma';
-import { COVERAGE_DIR } from '@/constants';
 import { scheduleMock, createServerMock } from '@test/_utils/mockFn';
 import createInjector from '@test/_utils/createInjector';
 
@@ -145,52 +143,6 @@ describe('viteServerFactory', () => {
         ...istanbulOriginConfig,
         cwd: '/a/b/c/',
       });
-    });
-
-    it('vite server watch config should ignore coverage reporters dir', async () => {
-      const coverageDir = 'temp_coverage';
-      await createViteDevServer({
-        vite: {
-          coverage: {
-            dir: coverageDir,
-          },
-        },
-      });
-      const viteConfig = createServerMock.mock.calls[0][0];
-      expect(viteConfig.server?.watch?.ignored).toEqual(
-        expect.arrayContaining([path.resolve(coverageDir, '**')]),
-      );
-    });
-
-    it('coverage reporters dir should be config.coverageReporter.dir or config.coverageIstanbulReporter.dir', async () => {
-      const coverageDir = 'temp_coverage';
-      await createViteDevServer({
-        coverageReporter: {
-          dir: coverageDir,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-      let lastViteConfig = createServerMock.mock.calls[0][0];
-      expect(lastViteConfig.server?.watch?.ignored).toEqual(
-        expect.arrayContaining([path.resolve(coverageDir, '**')]),
-      );
-
-      await createViteDevServer({
-        coverageIstanbulReporter: {
-          dir: coverageDir,
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
-      lastViteConfig = createServerMock.mock.calls[1][0];
-      expect(lastViteConfig.server?.watch?.ignored).toEqual(
-        expect.arrayContaining([path.resolve(coverageDir, '**')]),
-      );
-
-      await createViteDevServer();
-      lastViteConfig = createServerMock.mock.calls[2][0];
-      expect(lastViteConfig.server?.watch?.ignored).toEqual(
-        expect.arrayContaining([path.resolve(COVERAGE_DIR, '**')]),
-      );
     });
   });
 

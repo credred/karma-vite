@@ -1,7 +1,5 @@
-import path from 'path';
 import { createServer, mergeConfig } from 'vite';
 import IstanbulPlugin from 'vite-plugin-istanbul';
-import { COVERAGE_DIR } from '../constants';
 import type { FilePattern } from 'karma';
 import type { HMRPayload, InlineConfig, ViteDevServer } from 'vite';
 import type { Logger as OriginLogger } from 'log4js';
@@ -48,28 +46,11 @@ function resolveIstanbulPluginConfig(
 ): Parameters<typeof IstanbulPlugin>[0] {
   const coverage = config.vite?.coverage || {};
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { dir, enable, ...pluginOptions } = coverage;
+  const { enable, ...pluginOptions } = coverage;
   return {
     cwd: coverage?.cwd ?? config.basePath,
     ...pluginOptions,
   };
-}
-
-function resolveCoverageReportDir(config: Config) {
-  interface ConfigForCoverageReport {
-    coverageReporter?: {
-      dir?: string;
-    };
-    coverageIstanbulReporter?: {
-      dir?: string;
-    };
-  }
-  const hardDir = config.vite?.coverage?.dir;
-  const fallbackDir =
-    (config as ConfigForCoverageReport)?.coverageReporter?.dir ??
-    (config as ConfigForCoverageReport)?.coverageIstanbulReporter?.dir;
-
-  return hardDir || fallbackDir || COVERAGE_DIR;
 }
 
 async function resolveViteConfig(
@@ -176,9 +157,6 @@ const viteServerFactory: DiFactory<
     root: basePath,
     server: {
       middlewareMode: 'ssr',
-      watch: {
-        ignored: [path.resolve(resolveCoverageReportDir(config), '**')],
-      },
     },
     build: {
       // only intent to hidden the warning of IstanbulPlugin
