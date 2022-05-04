@@ -8,7 +8,9 @@
 npm install -D karma karma-vite
 ```
 
-## Configuration
+## Example
+
+### Basic
 
 ```javascript
 // karma.conf.js
@@ -28,7 +30,11 @@ module.exports = (config) => {
 };
 ```
 
-## Advanced
+### With ui framework
+
+see [examples](https://github.com/credred/karma-vite/tree/main/examples)
+
+## Configuration
 
 The plugin works out of the box. But you may need to customize some configuration.
 
