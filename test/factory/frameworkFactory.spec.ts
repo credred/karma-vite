@@ -26,18 +26,4 @@ describe('frameworkFactory', () => {
     const config = injector.get('config');
     expect(config).toMatchSnapshot();
   });
-
-  it('rewrite the files property of config correctly', async () => {
-    const injector = createInjector({
-      files: [
-        'a.ts',
-        { pattern: 'b.ts', included: false, vite: true },
-        { pattern: 'b.ts', served: true, vite: true },
-        { pattern: 'c.ts', vite: true },
-      ],
-    });
-    await injector.invoke(frameworkFactory);
-    const config = injector.get('config');
-    expect(config).toMatchSnapshot();
-  });
 });

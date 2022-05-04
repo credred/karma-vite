@@ -1,46 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`frameworkFactory rewrite the files property of config correctly 1`] = `
-Config {
-  "basePath": "./",
-  "beforeMiddleware": Array [
-    "vite-before",
-  ],
-  "files": Array [
-    "a.ts",
-    Object {
-      "included": false,
-      "pattern": "b.ts",
-      "served": false,
-      "type": "module",
-      "vite": true,
-      "watched": false,
-    },
-    Object {
-      "pattern": "b.ts",
-      "served": false,
-      "type": "module",
-      "vite": true,
-      "watched": false,
-    },
-    Object {
-      "pattern": "c.ts",
-      "served": false,
-      "type": "module",
-      "vite": true,
-      "watched": false,
-    },
-  ],
-  "frameworks": Array [],
-  "middleware": Array [
-    "vite",
-  ],
-  "plugins": Array [],
-  "reporters": Array [],
-  "urlRoot": "/",
-}
-`;
-
 exports[`frameworkFactory should auto init correctly in default config 1`] = `
 Config {
   "basePath": "./",

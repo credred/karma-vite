@@ -19,15 +19,9 @@ module.exports = (config) => {
     files: [
       {
         pattern: 'test/**/*.spec.ts',
-        // This is equivalent to the following configuration
-        // {
-        //    pattern: 'test/**/*.spec.ts',
-        //    type: 'module',
-        //    watched: false,
-        //    served: false,
-        // }
-        //
-        vite: true,
+        type: 'module',
+        watched: false,
+        served: false,
       },
     ],
   });
