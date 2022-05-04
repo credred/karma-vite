@@ -30,7 +30,7 @@ describe('viteServerFactory', () => {
     expect(vitePromise.value).toBe(vite);
   });
 
-  // because of we update only oldest vite server perperty
+  // because of we update only oldest vite server property
   it('the value property of returns object should not change even if vite restarted', async () => {
     const vitePromise = createViteDevServer();
     await vitePromise;
@@ -235,7 +235,7 @@ describe('viteServerFactory', () => {
       expect(scheduleMock).toBeCalled();
     });
 
-    it('after the vite server restart, the newServer should be intercepte again', async () => {
+    it('after the vite server restart, the newServer should be intercepted again', async () => {
       let newServer = await vite.restart();
       expect(scheduleMock).toBeCalledTimes(1);
       newServer?.ws.send({ type: 'full-reload' });

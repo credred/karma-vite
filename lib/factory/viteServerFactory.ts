@@ -19,7 +19,7 @@ export interface Executor {
   schedule: () => void;
 }
 
-function filterBelongToVitekarmaFiles(files?: (FilePattern | string)[]) {
+function filterBelongToViteFiles(files?: (FilePattern | string)[]) {
   return (
     files &&
     (
@@ -170,7 +170,7 @@ const viteServerFactory: DiFactory<
 > = (config, executor, logger) => {
   const log = logger.create('karma-vite:viteServer');
   const { basePath } = config;
-  const belongToVitekarmaFiles = filterBelongToVitekarmaFiles(config.files);
+  const belongToViteFiles = filterBelongToViteFiles(config.files);
   const inlineViteConfig: InlineConfig = {
     root: basePath,
     server: {
@@ -184,7 +184,7 @@ const viteServerFactory: DiFactory<
         IstanbulPlugin(resolveIstanbulPluginConfig(config)),
     ],
     optimizeDeps: {
-      entries: belongToVitekarmaFiles,
+      entries: belongToViteFiles,
     },
   };
   const viteProvider = resolveViteConfig(inlineViteConfig, config)
