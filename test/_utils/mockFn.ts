@@ -3,14 +3,19 @@ import { noop } from 'lodash';
 import type { ServerResponse } from 'http';
 import type { Connect, InlineConfig, ResolvedConfig } from 'vite';
 
+export const viteTransformIndexHtmlMsg = 'transformed';
+export const viteMiddlewareMockMsg = 'vite handled';
+export const viteNotHandleUrlPrefix = '__vite_not_handle_url_prefix__';
+
 export const scheduleMock = jest.fn();
 export let viteCloseMock = jest.fn();
 export const viteWsSendMock = jest.fn();
+export const viteTransformIndexHtmlMock = jest.fn(() =>
+  Promise.resolve(viteTransformIndexHtmlMsg),
+);
 let viteMiddlewareMock = jest.fn(((req, res, next) => {
   next();
 }) as Connect.NextHandleFunction);
-export const viteMiddlewareMockMsg = 'vite handled';
-export const viteNotHandleUrlPrefix = '__vite_not_handle_url_prefix__';
 export const createServerMock = jest.fn((config: InlineConfig) => {
   const base = config.base ?? '/';
   let closed = false;
@@ -49,6 +54,7 @@ export const createServerMock = jest.fn((config: InlineConfig) => {
     ws: {
       send: viteWsSendMock,
     },
+    transformIndexHtml: viteTransformIndexHtmlMock,
   });
 });
 
