@@ -2,7 +2,8 @@
   "private": true,
   "description": "react example with karma vite",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "test:coverage": "karma start --reporters coverage"
   },
   "devDependencies": {
     "@testing-library/react": "^13.1.1",

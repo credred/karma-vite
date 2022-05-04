@@ -1,8 +1,10 @@
-/** @type {(config: import("karma").Config}) => Promise<void> | undefined */
+require('path');
+
+/** @type {(config: import("karma").Config) => Promise<void> | undefined} */
 module.exports = function (config) {
   config.set({
     basePath: './',
-    urlRoot: '/test',
+    urlRoot: '/test/',
     plugins: [
       'karma-spec-reporter',
       'karma-jasmine',
@@ -10,7 +12,7 @@ module.exports = function (config) {
       'karma-coverage',
     ],
     frameworks: ['jasmine', 'vite'],
-    reporters: ['spec', 'coverage'],
+    reporters: ['spec'],
     files: [
       {
         pattern: 'test/**/*.spec.tsx',
