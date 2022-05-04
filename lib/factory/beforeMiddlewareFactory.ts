@@ -24,7 +24,7 @@ const beforeMiddlewareFactory: DiFactory<
   return (req, res, next) => {
     // hack, intercept the context.html which serve by karma and handle it over to vite
     const url = req.url && cleanUrl(stripHost(req.url));
-    if (!(url && url.startsWith(urlRoot))) {
+    if (!url?.startsWith(urlRoot)) {
       return next();
     }
     const newUrl = url.replace(urlRoot, '/');
