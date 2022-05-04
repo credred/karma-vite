@@ -1,4 +1,4 @@
-require('path');
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 /** @type {(config: import("karma").Config) => Promise<void> | undefined} */
 module.exports = function (config) {
@@ -10,7 +10,9 @@ module.exports = function (config) {
       'karma-jasmine',
       'karma-vite',
       'karma-coverage',
+      'karma-chrome-launcher',
     ],
+    browsers: ['ChromeHeadless'],
     frameworks: ['jasmine', 'vite'],
     reporters: ['spec'],
     files: [
