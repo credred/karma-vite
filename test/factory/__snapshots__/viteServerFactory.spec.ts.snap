@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`viteServerFactory createServer config istanbulPlugin should be used if enable coverage 1`] = `
+Object {
+  "build": Object {
+    "sourcemap": true,
+  },
+  "optimizeDeps": Object {
+    "entries": Array [],
+  },
+  "plugins": Array [
+    Object {
+      "name": "vite:istanbul",
+    },
+  ],
+  "root": "./",
+  "server": Object {
+    "middlewareMode": "ssr",
+    "watch": Object {
+      "ignored": Array [
+        "/home/qiufan/front/github/karma-vite/coverage/**",
+      ],
+    },
+  },
+}
+`;
+
+exports[`viteServerFactory createServer config merge user config 1`] = `
+Object {
+  "base": "a/b/c/",
+  "build": Object {
+    "sourcemap": undefined,
+  },
+  "configFile": false,
+  "optimizeDeps": Object {
+    "entries": Array [],
+  },
+  "plugins": Array [
+    false,
+  ],
+  "root": "./",
+  "server": Object {
+    "middlewareMode": "ssr",
+    "watch": Object {
+      "ignored": Array [
+        "/home/qiufan/front/github/karma-vite/coverage/**",
+      ],
+    },
+  },
+}
+`;

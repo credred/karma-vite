@@ -53,6 +53,7 @@ describe('viteServerFactory', () => {
       expect(createServerMock.mock.calls[0][0]).toEqual(
         expect.objectContaining(userConfig),
       );
+      expect(createServerMock.mock.calls[0][0]).toMatchSnapshot();
     });
 
     it('merge user promise config', async () => {
@@ -98,6 +99,7 @@ describe('viteServerFactory', () => {
       expect(viteConfig.plugins).toEqual(
         expect.objectContaining([{ name: 'vite:istanbul' }]),
       );
+      expect(viteConfig).toMatchSnapshot();
     });
 
     it('istanbulPlugin should be used if the config of reporters contain the "coverage" text', async () => {

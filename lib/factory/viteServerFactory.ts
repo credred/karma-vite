@@ -46,12 +46,12 @@ function resolveEnableIstanbulPlugin(config: Config) {
 function resolveIstanbulPluginConfig(
   config: Config,
 ): Parameters<typeof IstanbulPlugin>[0] {
-  const { vite: { coverage } = {} } = config;
+  const coverage = config.vite?.coverage || {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { dir, enable, ...pluginOptions } = coverage;
   return {
-    include: coverage?.include,
-    exclude: coverage?.exclude,
-    extension: coverage?.extension,
     cwd: coverage?.cwd ?? config.basePath,
+    ...pluginOptions,
   };
 }
 
@@ -171,6 +171,7 @@ const viteServerFactory: DiFactory<
   const log = logger.create('karma-vite:viteServer');
   const { basePath } = config;
   const belongToViteFiles = filterBelongToViteFiles(config.files);
+  const isEnableIstanbulPlugin = resolveEnableIstanbulPlugin(config);
   const inlineViteConfig: InlineConfig = {
     root: basePath,
     server: {
@@ -179,8 +180,12 @@ const viteServerFactory: DiFactory<
         ignored: [path.resolve(resolveCoverageReportDir(config), '**')],
       },
     },
+    build: {
+      // only intent to hidden the warning of IstanbulPlugin
+      sourcemap: isEnableIstanbulPlugin || undefined,
+    },
     plugins: [
-      resolveEnableIstanbulPlugin(config) &&
+      isEnableIstanbulPlugin &&
         IstanbulPlugin(resolveIstanbulPluginConfig(config)),
     ],
     optimizeDeps: {
