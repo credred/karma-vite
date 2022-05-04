@@ -13,8 +13,8 @@ import type viteServerFactory from '@/factory/viteServerFactory';
 import type { ViteDevServerInternal } from '@/factory/viteServerFactory';
 import type { ConfigOptions } from 'karma';
 import { COVERAGE_DIR } from '@/constants';
-import { scheduleMock, createServerMock } from './_utils/mockFn';
-import createInjector from './_utils/createInjector';
+import { scheduleMock, createServerMock } from '@test/_utils/mockFn';
+import createInjector from '@test/_utils/createInjector';
 
 function createViteDevServer(config?: ConfigOptions) {
   const injector = createInjector(config);

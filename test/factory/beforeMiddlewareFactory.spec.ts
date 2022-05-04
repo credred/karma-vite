@@ -1,11 +1,11 @@
 import request from 'supertest';
 import connect from 'connect';
 import beforeMiddlewareFactory from '@/factory/beforeMiddlewareFactory';
-import createInjector from './_utils/createInjector';
+import createInjector from '@test/_utils/createInjector';
 import {
   viteTransformIndexHtmlMock,
   viteTransformIndexHtmlMsg,
-} from './_utils/mockFn';
+} from '@test/_utils/mockFn';
 
 const urlRoot = '/test/';
 const viteBase = '/vite/';

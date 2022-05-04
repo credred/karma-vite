@@ -5,8 +5,8 @@ import {
   serveFileMock,
   viteMiddlewareMockMsg,
   viteNotHandleUrlPrefix,
-} from './_utils/mockFn';
-import createInjector from './_utils/createInjector';
+} from '@test/_utils/mockFn';
+import createInjector from '@test/_utils/createInjector';
 import { VITE_FS_PREFIX } from '@/constants';
 
 const urlRoot = '/test/';

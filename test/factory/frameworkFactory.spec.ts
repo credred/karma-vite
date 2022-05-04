@@ -1,5 +1,5 @@
 import frameworkFactory from '@/factory/frameworkFactory';
-import createInjector from './_utils/createInjector';
+import createInjector from '@test/_utils/createInjector';
 
 describe('frameworkFactory', () => {
   it('should return viteServer', async () => {

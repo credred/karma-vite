@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "types": ["jest", "lodash"],
     "paths": {
-      "@/*": ["lib/*"]
+      "@/*": ["lib/*"],
+      "@test/*": ["test/*"]
     },
     "sourceMap": true
   },
