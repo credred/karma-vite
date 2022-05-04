@@ -16,6 +16,11 @@ Object {
   "root": "./",
   "server": Object {
     "middlewareMode": "ssr",
+    "watch": Object {
+      "ignored": Array [
+        "**/coverage/**",
+      ],
+    },
   },
 }
 `;
@@ -36,6 +41,11 @@ Object {
   "root": "./",
   "server": Object {
     "middlewareMode": "ssr",
+    "watch": Object {
+      "ignored": Array [
+        "**/coverage/**",
+      ],
+    },
   },
 }
 `;

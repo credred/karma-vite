@@ -157,6 +157,9 @@ const viteServerFactory: DiFactory<
     root: basePath,
     server: {
       middlewareMode: 'ssr',
+      watch: {
+        ignored: ['**/coverage/**'],
+      },
     },
     build: {
       // only intent to hidden the warning of IstanbulPlugin
