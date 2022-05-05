@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { ViteHotContext } from 'vite/types/hot';
 import { ErrorOverlay } from './overlay';
+import '@vite/env';
 
 const sheetsMap = new Map();
 
