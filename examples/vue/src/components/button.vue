@@ -1,6 +1,6 @@
 <template>
-  <button @click="onClick">
-    <slot></slot>
+  <button @click="onClick" :style="{ width: '200px' }">
+    <slot>123</slot>
   </button>
 </template>
 

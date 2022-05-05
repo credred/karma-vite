@@ -1,8 +1,16 @@
 import { Button } from '../src/index';
 import { mount } from '@vue/test-utils';
 
+beforeEach(() => {
+  document.body.innerHTML = `
+  <div>
+    <div id="app"></div>
+  </div>
+`;
+});
+
 describe('button test', () => {
-  it('button children', () => {
+  it('button click event', () => {
     const func = jasmine.createSpy();
     const wrapper = mount(Button, {
       props: {
@@ -16,5 +24,12 @@ describe('button test', () => {
 
     expect(func).toHaveBeenCalled();
     expect(wrapper.text()).toBe('123');
+  });
+
+  it('button width', () => {
+    const wrapper = mount(Button, { attachTo: '#app' });
+    const rect = wrapper.element.getBoundingClientRect();
+
+    expect(rect.width).toBe(200);
   });
 });

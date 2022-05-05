@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ButtonProps {
-  onClick: React.MouseEventHandler<HTMLElement>;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   children?: React.ReactNode;
   forRealUnCoveredProps?: boolean;
 }
@@ -16,7 +16,11 @@ const Button: React.FC<ButtonProps> = (props) => {
   } else {
     noop();
   }
-  return <button onClick={props.onClick}>{props.children}</button>;
+  return (
+    <button onClick={props.onClick} style={{ width: 200 }}>
+      {props.children}
+    </button>
+  );
 };
 
 export default Button;

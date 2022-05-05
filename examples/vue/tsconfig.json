@@ -7,6 +7,6 @@
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext"]
+    "lib": ["ESNext", "DOM"]
   }
 }

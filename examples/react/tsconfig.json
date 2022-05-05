@@ -8,6 +8,6 @@
     "jsx": "react",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext"]
+    "lib": ["ESNext", "DOM"]
   }
 }
