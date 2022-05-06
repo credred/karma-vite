@@ -30,9 +30,11 @@ module.exports = (config) => {
 };
 ```
 
-### With ui framework
+### full solution
 
-see [examples](https://github.com/credred/karma-vite/tree/main/examples)
+Edit on [stackblitz](https://stackblitz.com/edit/karma-vite-react-example?file=test/button.spec.tsx)
+
+more examples see in [github](https://github.com/credred/karma-vite/tree/main/examples)
 
 ## Configuration
 
