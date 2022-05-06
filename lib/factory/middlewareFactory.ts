@@ -11,6 +11,7 @@ import type { DiFactory } from '../types/diFactory';
 import type { Config, Logger, ServeFile } from '../types/karma';
 
 const unwantedViteClientHtml = new Set([
+  '/',
   '/context.html',
   '/client_with_context.html',
 ]);
