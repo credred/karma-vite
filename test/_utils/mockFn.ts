@@ -9,6 +9,7 @@ export const viteNotHandleUrlPrefix = '__vite_not_handle_url_prefix__';
 
 export const scheduleMock = jest.fn();
 export let viteCloseMock = jest.fn();
+export const viteTransformRequestMock = jest.fn();
 export const viteWsSendMock = jest.fn();
 export const viteTransformIndexHtmlMock = jest.fn(() =>
   Promise.resolve(viteTransformIndexHtmlMsg),
@@ -55,6 +56,7 @@ export const createServerMock = jest.fn((config: InlineConfig) => {
       send: viteWsSendMock,
     },
     transformIndexHtml: viteTransformIndexHtmlMock,
+    transformRequest: viteTransformRequestMock,
   });
 });
 

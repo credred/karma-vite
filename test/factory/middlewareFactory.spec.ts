@@ -2,9 +2,9 @@ import request from 'supertest';
 import middlewareFactory from '@/factory/middlewareFactory';
 import type { Connect, ViteDevServer } from 'vite';
 import {
-  serveFileMock,
   viteMiddlewareMockMsg,
   viteNotHandleUrlPrefix,
+  viteTransformRequestMock,
 } from '@test/_utils/mockFn';
 import createInjector from '@test/_utils/createInjector';
 import { VITE_FS_PREFIX } from '@/constants';
@@ -85,13 +85,13 @@ describe('middlewareFactory', () => {
     await request(middleware)
       .get(`${viteBase}@vite/client`)
       .set('referer', `http://localhost${urlRoot}context.html`);
-    expect(serveFileMock).toBeCalled();
+    expect(viteTransformRequestMock).toBeCalled();
   });
 
   it('should not intercept that the request want to get @vite/client but the request referer header does not meet the conditions', async () => {
     await request(middleware)
       .get(`${viteBase}@vite/client`)
       .set('referer', `http://localhost${urlRoot}debug.html`);
-    expect(serveFileMock).not.toBeCalled();
+    expect(viteTransformRequestMock).not.toBeCalled();
   });
 });

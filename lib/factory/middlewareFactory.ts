@@ -8,7 +8,7 @@ import {
 import type { Connect, ViteDevServer } from 'vite';
 import type { Logger as OriginLogger } from 'log4js';
 import type { DiFactory } from '../types/diFactory';
-import type { Config, Logger, ServeFile } from '../types/karma';
+import type { Config, Logger } from '../types/karma';
 
 const unwantedViteClientHtml = new Set([
   '/',
@@ -68,7 +68,6 @@ const restorePrefixMiddleware = (
 const viteClientMiddleware = (
   vite: ViteDevServer,
   urlRoot: string,
-  serveFile: ServeFile,
   log: OriginLogger,
 ): Connect.NextHandleFunction => {
   return (req: IncomingMessage, res, next) => {
@@ -80,7 +79,16 @@ const viteClientMiddleware = (
           log.debug(
             `${url} is requesting vite client which will be mock by karma-vite because the request referer do not need hmr`,
           );
-          return serveFile(VITE_CLIENT_ENTRY, req.headers.range, res);
+          void vite
+            .transformRequest(
+              `${VITE_FS_PREFIX.slice(0, 1)}${VITE_CLIENT_ENTRY}`,
+            )
+            .then((result) => {
+              if (result) {
+                res.setHeader('Content-Type', 'application/javascript');
+                res.end(result.code);
+              }
+            });
         }
       }
     }
@@ -89,14 +97,9 @@ const viteClientMiddleware = (
 };
 
 const middlewareFactory: DiFactory<
-  [
-    vite: ViteDevServer | undefined,
-    config: Config,
-    serveFile: ServeFile,
-    logger: Logger,
-  ],
+  [vite: ViteDevServer | undefined, config: Config, logger: Logger],
   Connect.Server
-> = (vite, config, serveFile, logger) => {
+> = (vite, config, logger) => {
   const { urlRoot } = config;
   const log = logger.create('karma-vite:middleware');
   if (vite === undefined) {
@@ -107,7 +110,7 @@ const middlewareFactory: DiFactory<
   const handler = connect();
 
   handler.use(adjustPrefixMiddleware(urlRoot, vite.config.base, log));
-  handler.use(viteClientMiddleware(vite, urlRoot, serveFile, log));
+  handler.use(viteClientMiddleware(vite, urlRoot, log));
   handler.use((req, res, next) => {
     vite.middlewares(req, res, next);
   });
@@ -116,6 +119,6 @@ const middlewareFactory: DiFactory<
   return handler;
 };
 
-middlewareFactory.$inject = ['vite.value', 'config', 'serveFile', 'logger'];
+middlewareFactory.$inject = ['vite.value', 'config', 'logger'];
 
 export default middlewareFactory;

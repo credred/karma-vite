@@ -100,6 +100,9 @@ cli
               formats: ['es'],
               fileName: () => 'viteClientMock.js',
             },
+            rollupOptions: {
+              external: ['@vite/env'],
+            },
           },
         }),
       );
