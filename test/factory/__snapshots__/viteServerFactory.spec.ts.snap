@@ -15,6 +15,7 @@ Object {
   ],
   "root": "./",
   "server": Object {
+    "base": "__vite__",
     "middlewareMode": "ssr",
     "watch": Object {
       "ignored": Array [
@@ -40,6 +41,7 @@ Object {
   ],
   "root": "./",
   "server": Object {
+    "base": "__vite__",
     "middlewareMode": "ssr",
     "watch": Object {
       "ignored": Array [

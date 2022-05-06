@@ -36,10 +36,17 @@ describe('beforeMiddlewareFactory', () => {
     const server = await createServer();
     const response = await request(server).get(`${urlRoot}context.html`);
     expect(viteTransformIndexHtmlMock).toBeCalledWith(
-      '/context.html',
+      '/__vite__/context.html',
       fallbackMsg,
     );
     expect(response.text).toBe(viteTransformIndexHtmlMsg);
+  });
+
+  // vite will handle this request
+  it('should not intercept if request url has query param', async () => {
+    const server = await createServer();
+    await request(server).get(`${urlRoot}context.html?html-proxy&index=0.js`);
+    expect(viteTransformIndexHtmlMock).not.toBeCalled();
   });
 
   it('should not intercept other html which does not served by karma', async () => {

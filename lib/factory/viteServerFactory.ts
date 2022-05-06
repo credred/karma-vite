@@ -156,6 +156,7 @@ const viteServerFactory: DiFactory<
   const inlineViteConfig: InlineConfig = {
     root: basePath,
     server: {
+      base: '__vite__',
       middlewareMode: 'ssr',
       watch: {
         ignored: ['**/coverage/**'],

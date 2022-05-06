@@ -2,7 +2,7 @@ import type { Connect, ViteDevServer } from 'vite';
 import type { DiFactory } from '../types/diFactory';
 import type { Config, Logger } from '../types/karma';
 import type { ServerResponse } from 'http';
-import stripHost, { cleanUrl } from '../utils';
+import stripHost from '../utils';
 
 const contextHtmlLikeSet = new Set([
   '/context.html',
@@ -23,7 +23,7 @@ const beforeMiddlewareFactory: DiFactory<
 
   return (req, res, next) => {
     // hack, intercept the context.html which serve by karma and handle it over to vite
-    const url = req.url && cleanUrl(stripHost(req.url));
+    const url = req.url && stripHost(req.url);
     if (!url?.startsWith(urlRoot)) {
       return next();
     }
@@ -34,9 +34,11 @@ const beforeMiddlewareFactory: DiFactory<
       res.end = (...args: any[]): ServerResponse => {
         if (typeof args[0] === 'string') {
           const [html, ...rest] = args;
-          void vite.transformIndexHtml(newUrl, html).then((data) => {
-            originEnd(data, ...rest);
-          });
+          void vite
+            .transformIndexHtml(`/__vite__${newUrl}`, html)
+            .then((data) => {
+              originEnd(data, ...rest);
+            });
         } else {
           originEnd(...args);
         }
