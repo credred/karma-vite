@@ -3,16 +3,16 @@
 exports[`frameworkFactory should auto init correctly in default config 1`] = `
 Config {
   "basePath": "./",
-  "beforeMiddleware": Array [
+  "beforeMiddleware": [
     "vite-before",
   ],
-  "files": Array [],
-  "frameworks": Array [],
-  "middleware": Array [
+  "files": [],
+  "frameworks": [],
+  "middleware": [
     "vite",
   ],
-  "plugins": Array [],
-  "reporters": Array [],
+  "plugins": [],
+  "reporters": [],
   "urlRoot": "/",
 }
 `;
@@ -20,12 +20,12 @@ Config {
 exports[`frameworkFactory should not auto init if vite.autoInit is false in config 1`] = `
 Config {
   "basePath": "./",
-  "files": Array [],
-  "frameworks": Array [],
-  "plugins": Array [],
-  "reporters": Array [],
+  "files": [],
+  "frameworks": [],
+  "plugins": [],
+  "reporters": [],
   "urlRoot": "/",
-  "vite": Object {
+  "vite": {
     "autoInit": false,
   },
 }

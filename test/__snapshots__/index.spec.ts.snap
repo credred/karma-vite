@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`repo output export correctly 1`] = `
-Object {
-  "default": Object {
-    "framework:vite": Array [
+{
+  "default": {
+    "framework:vite": [
       "factory",
       [Function],
     ],
-    "middleware:vite": Array [
+    "middleware:vite": [
       "factory",
       [Function],
     ],
-    "middleware:vite-before": Array [
+    "middleware:vite-before": [
       "factory",
       [Function],
     ],
-    "vite": Array [
+    "vite": [
       "factory",
       [Function],
     ],

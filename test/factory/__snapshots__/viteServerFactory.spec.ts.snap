@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`viteServerFactory createServer config istanbulPlugin should be used if enable coverage 1`] = `
-Object {
-  "build": Object {
+{
+  "build": {
     "sourcemap": true,
   },
-  "optimizeDeps": Object {
-    "entries": Array [],
+  "optimizeDeps": {
+    "entries": [],
   },
-  "plugins": Array [
-    Object {
+  "plugins": [
+    {
       "name": "vite:istanbul",
     },
   ],
   "root": "./",
-  "server": Object {
+  "server": {
     "base": "__vite__",
     "middlewareMode": "ssr",
-    "watch": Object {
-      "ignored": Array [
+    "watch": {
+      "ignored": [
         "**/coverage/**",
       ],
     },
@@ -27,24 +27,24 @@ Object {
 `;
 
 exports[`viteServerFactory createServer config merge user config 1`] = `
-Object {
+{
   "base": "a/b/c/",
-  "build": Object {
+  "build": {
     "sourcemap": undefined,
   },
   "configFile": false,
-  "optimizeDeps": Object {
-    "entries": Array [],
+  "optimizeDeps": {
+    "entries": [],
   },
-  "plugins": Array [
+  "plugins": [
     false,
   ],
   "root": "./",
-  "server": Object {
+  "server": {
     "base": "__vite__",
     "middlewareMode": "ssr",
-    "watch": Object {
-      "ignored": Array [
+    "watch": {
+      "ignored": [
         "**/coverage/**",
       ],
     },

@@ -4,10 +4,13 @@ const tsconfig = require('./tsconfig.test.json');
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   preset: 'ts-jest',
-  globals: {
-    'ts-jest': {
-      tsconfig: './tsconfig.test.json',
-    },
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: './tsconfig.test.json',
+      },
+    ],
   },
   clearMocks: true,
   moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
