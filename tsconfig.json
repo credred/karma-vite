@@ -5,7 +5,7 @@
     "declaration": true,
     "noEmit": true,
     "types": ["vite/client"],
-    "lib": ["esnext"]
+    "lib": ["esnext", "dom"]
   },
   "include": ["lib/**/*"]
 }

@@ -55,6 +55,9 @@ cli
     await build(
       mergeConfig(commonConfig, {
         root,
+        legacy: {
+          buildSsrCjsExternalHeuristics: true,
+        },
         build: {
           target: 'node12',
           ...buildOptions,
@@ -74,7 +77,7 @@ cli
         },
         plugins: [
           !coreOnly &&
-            dts.default({
+            dts({
               staticImport: true,
               skipDiagnostics: false,
               // The plugin will report `TS2742` error if set this field to true, but running tsc command will not report an error.
