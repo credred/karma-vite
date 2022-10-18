@@ -5,6 +5,7 @@ import type { HMRPayload, InlineConfig, ViteDevServer } from 'vite';
 import type { Logger as OriginLogger } from 'log4js';
 import type { DiFactory } from '../types/diFactory';
 import type { Config, Logger } from '../types/karma';
+import { getViteVersion } from '../utils';
 
 export interface ViteProvider extends Promise<ViteDevServer> {
   /**
@@ -153,11 +154,28 @@ const viteServerFactory: DiFactory<
   const { basePath } = config;
   const belongToViteFiles = filterBelongToViteFiles(config.files);
   const isEnableIstanbulPlugin = resolveEnableIstanbulPlugin(config);
-  const inlineViteConfig: InlineConfig = {
+  const version = getViteVersion(basePath);
+
+  let versionViteConfig: InlineConfig;
+  if (version === '2') {
+    versionViteConfig = {
+      server: {
+        middlewareMode: 'ssr',
+      },
+    };
+  } else {
+    versionViteConfig = {
+      server: {
+        middlewareMode: true,
+      },
+      appType: 'custom',
+    };
+  }
+
+  const baseViteConfig: InlineConfig = {
     root: basePath,
     server: {
       base: '__vite__',
-      middlewareMode: 'ssr',
       watch: {
         ignored: ['**/coverage/**'],
       },
@@ -174,6 +192,7 @@ const viteServerFactory: DiFactory<
       entries: belongToViteFiles,
     },
   };
+  const inlineViteConfig = mergeConfig(baseViteConfig, versionViteConfig);
   const viteProvider = resolveViteConfig(inlineViteConfig, config)
     .then((config) => {
       log.debug(`using resolved config: \n%O\n`, config);

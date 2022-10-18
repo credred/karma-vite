@@ -71,6 +71,7 @@ export function createHotContext(): ViteHotContext {
 
     accept() {},
 
+    // @ts-expect-error vite2 compatible
     acceptDeps() {
       throw new Error(
         `hot.acceptDeps() is deprecated. ` +
@@ -78,9 +79,10 @@ export function createHotContext(): ViteHotContext {
       );
     },
 
+    acceptExports() {},
+
     dispose() {},
 
-    // @ts-expect-error untyped
     prune() {},
 
     // TODO

@@ -28,6 +28,7 @@ importers:
       jest: ^29.0.3
       jest-environment-jsdom: ^29.2.0
       lint-staged: ^13.0.3
+      local-pkg: ^0.4.2
       lodash: ^4.17.21
       log4js: ^6.7.0
       magic-string: ^0.26.7
@@ -41,6 +42,7 @@ importers:
       vite-plugin-istanbul: ^2.7.1
     dependencies:
       connect: 3.7.0
+      local-pkg: 0.4.2
       vite-plugin-istanbul: 2.9.0
     devDependencies:
       '@babel/parser': 7.19.4
@@ -4580,6 +4582,11 @@ packages:
       through: 2.3.8
       wrap-ansi: 7.0.0
     dev: true
+
+  /local-pkg/0.4.2:
+    resolution: {integrity: sha512-mlERgSPrbxU3BP4qBqAvvwlgW4MTg78iwJdGGnv7kibKjWcJksrG3t6LB5lXI93wXRDvG4NpUgJFmTG4T6rdrg==}
+    engines: {node: '>=14'}
+    dev: false
 
   /locate-path/5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
