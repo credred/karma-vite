@@ -7,8 +7,8 @@
   },
   "devDependencies": {
     "@types/jasmine": "^4.0.3",
-    "@vitejs/plugin-vue": "^2.3.1",
-    "@vue/test-utils": "^2.0.0-rc.18",
+    "@vitejs/plugin-vue": "^3.1.2",
+    "@vue/test-utils": "^2.1.0",
     "karma": "^6.3.19",
     "karma-chrome-launcher": "^3.1.1",
     "karma-coverage": "^2.2.0",
@@ -16,7 +16,7 @@
     "karma-spec-reporter": "^0.0.34",
     "karma-vite": "workspace:*",
     "puppeteer": "^13.7.0",
-    "vite": "^2.9.5"
+    "vite": "^3.1.8"
   },
   "dependencies": {
     "vue": "^3.2.33"
