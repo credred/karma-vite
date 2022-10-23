@@ -2,6 +2,7 @@
 
 exports[`viteServerFactory createServer config istanbulPlugin should be used if enable coverage 1`] = `
 {
+  "appType": "custom",
   "build": {
     "sourcemap": true,
   },
@@ -16,7 +17,7 @@ exports[`viteServerFactory createServer config istanbulPlugin should be used if 
   "root": "./",
   "server": {
     "base": "__vite__",
-    "middlewareMode": "ssr",
+    "middlewareMode": true,
     "watch": {
       "ignored": [
         "**/coverage/**",
@@ -28,6 +29,7 @@ exports[`viteServerFactory createServer config istanbulPlugin should be used if 
 
 exports[`viteServerFactory createServer config merge user config 1`] = `
 {
+  "appType": "custom",
   "base": "a/b/c/",
   "build": {
     "sourcemap": undefined,
@@ -42,7 +44,7 @@ exports[`viteServerFactory createServer config merge user config 1`] = `
   "root": "./",
   "server": {
     "base": "__vite__",
-    "middlewareMode": "ssr",
+    "middlewareMode": true,
     "watch": {
       "ignored": [
         "**/coverage/**",
