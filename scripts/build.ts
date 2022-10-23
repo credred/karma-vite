@@ -1,17 +1,16 @@
-//@ts-check
-const path = require('path');
-const { build, mergeConfig } = require('vite');
-const { cac } = require('cac');
-const rimraf = require('rimraf');
-const dts = require('vite-plugin-dts');
-const chalk = require('chalk');
-const patchTypes = require('./patchTypes');
+import path from 'node:path';
+import { build, mergeConfig } from 'vite';
+import { cac } from 'cac';
+import rimraf from 'rimraf';
+import dts from 'vite-plugin-dts';
+import chalk from 'chalk';
+import patchTypes from './patchTypes';
+import type { InlineConfig } from 'vite';
 
 const cli = cac('vite');
 
 const outDir = 'dist';
-/** @type {import('vite').InlineConfig} */
-const commonConfig = {
+const commonConfig: InlineConfig = {
   clearScreen: false,
   build: {
     outDir: outDir,

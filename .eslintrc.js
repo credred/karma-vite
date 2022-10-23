@@ -1,6 +1,7 @@
 // @ts-check
 const { defineConfig } = require('eslint-define-config');
 const cjsTsconfig = require('./tsconfig.cjs.json');
+const esTsconfig = require('./tsconfig.es.json');
 
 module.exports = defineConfig({
   root: true,
@@ -35,6 +36,17 @@ module.exports = defineConfig({
       // configuration file type is cjs，disable no-var-requires
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+      },
+    },
+    {
+      files: esTsconfig.include,
+      parserOptions: {
+        project: './tsconfig.es.json',
+      },
+      extends: ['plugin:node/recommended-module'],
+      rules: {
+        'node/no-missing-import': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
       },
     },

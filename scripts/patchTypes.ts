@@ -1,18 +1,16 @@
 // tsc not bundle dts
 // MIT Licensed https://github.com/vitejs/vite/blob/main/LICENSE
 
-const { parse } = require('@babel/parser');
-const chalk = require('chalk');
-const { existsSync, readFileSync, writeFileSync } = require('fs');
-const MagicString = require('magic-string');
+import { parse } from '@babel/parser';
+import chalk from 'chalk';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import MagicString from 'magic-string';
+import { isNumber } from 'lodash';
 
 // transform the "export default" statement to "export =" statement for dts
 console.log(chalk.green(chalk.bold(`patched export default statement`)));
 
-/**
- * @param {string} file
- */
-module.exports = function patchTypes(file) {
+export default function patchTypes(file: string) {
   if (!existsSync(file)) {
     console.log(chalk.red(`${file} not exist`));
     throw `${file} not exist`;
@@ -26,8 +24,12 @@ module.exports = function patchTypes(file) {
   for (const statement of ast.program.body) {
     if (statement.type === 'ExportDefaultDeclaration') {
       const declaration = statement.declaration;
-      str.overwrite(statement.start, declaration.start - 1, 'export =');
+      if (isNumber(statement.start) && isNumber(declaration.start)) {
+        str.overwrite(statement.start, declaration.start - 1, 'export =');
+      } else {
+        throw new Error('patchTypes failed');
+      }
     }
   }
   writeFileSync(file, str.toString());
-};
+}

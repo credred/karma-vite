@@ -9,9 +9,9 @@
     "src"
   ],
   "scripts": {
-    "dev": "node scripts/build.js --watch --coreOnly",
-    "dev:all": "node scripts/build.js --watch",
-    "build": "tsc && node scripts/build.js",
+    "dev": "tsx scripts/build.ts --watch --coreOnly",
+    "dev:all": "tsx scripts/build.ts --watch",
+    "build": "tsc && tsx scripts/build.ts",
     "lint": "eslint . --ext .js,.ts",
     "format": "prettier --write --ignore-unknown .",
     "test": "jest",
@@ -79,6 +79,7 @@
     "rimraf": "^3.0.2",
     "supertest": "^6.3.0",
     "ts-jest": "^29.0.3",
+    "tsx": "^3.10.4",
     "typescript": "^4.8.4",
     "vite": "^3.1.8",
     "vite-plugin-dts": "^1.6.6"
