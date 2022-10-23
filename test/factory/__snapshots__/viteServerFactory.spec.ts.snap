@@ -53,3 +53,27 @@ exports[`viteServerFactory createServer config merge user config 1`] = `
   },
 }
 `;
+
+exports[`viteServerFactory createServer config vite2 config 1`] = `
+{
+  "build": {
+    "sourcemap": undefined,
+  },
+  "optimizeDeps": {
+    "entries": [],
+  },
+  "plugins": [
+    false,
+  ],
+  "root": "./",
+  "server": {
+    "base": "__vite__",
+    "middlewareMode": "ssr",
+    "watch": {
+      "ignored": [
+        "**/coverage/**",
+      ],
+    },
+  },
+}
+`;

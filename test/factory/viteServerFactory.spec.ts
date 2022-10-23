@@ -70,6 +70,15 @@ describe('viteServerFactory', () => {
       );
     });
 
+    it('vite2 config', async () => {
+      await createViteDevServer({
+        vite: {
+          version: 'vite2',
+        },
+      });
+      expect(createServerMock.mock.calls[0][0]).toMatchSnapshot();
+    });
+
     it('find optimize deps entries in karma files', async () => {
       await createViteDevServer({
         files: [
