@@ -17,6 +17,10 @@ export interface KarmaViteConfig {
    */
   config?: InlineConfigExport;
   /**
+   * The vite version is automatically detected by default
+   */
+  version?: 'vite2' | 'vite3';
+  /**
    * @description The plugin can reporte coverage,
    * but it will only take effect after using karma coverage reporter like karma-coverage
    *

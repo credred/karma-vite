@@ -154,10 +154,10 @@ const viteServerFactory: DiFactory<
   const { basePath } = config;
   const belongToViteFiles = filterBelongToViteFiles(config.files);
   const isEnableIstanbulPlugin = resolveEnableIstanbulPlugin(config);
-  const version = getViteVersion(basePath);
+  const version = config.vite?.version || getViteVersion(basePath);
 
   let versionViteConfig: InlineConfig;
-  if (version === '2') {
+  if (version === 'vite2') {
     versionViteConfig = {
       server: {
         middlewareMode: 'ssr',
