@@ -85,13 +85,13 @@ describe('middlewareFactory', () => {
     await request(middleware)
       .get(`${viteBase}@vite/client`)
       .set('referer', `http://localhost${urlRoot}context.html`);
-    expect(viteTransformRequestMock).toBeCalled();
+    expect(viteTransformRequestMock).toHaveBeenCalled();
   });
 
   it('should not intercept that the request want to get @vite/client but the request referer header does not meet the conditions', async () => {
     await request(middleware)
       .get(`${viteBase}@vite/client`)
       .set('referer', `http://localhost${urlRoot}debug.html`);
-    expect(viteTransformRequestMock).not.toBeCalled();
+    expect(viteTransformRequestMock).not.toHaveBeenCalled();
   });
 });

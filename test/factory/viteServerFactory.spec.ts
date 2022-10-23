@@ -93,7 +93,7 @@ describe('viteServerFactory', () => {
         },
       });
       const viteConfig = createServerMock.mock.calls[0][0];
-      expect(vitePluginIstanbul).toBeCalled();
+      expect(vitePluginIstanbul).toHaveBeenCalled();
       expect(viteConfig.plugins).toEqual(
         expect.objectContaining([{ name: 'vite:istanbul' }]),
       );
@@ -105,7 +105,7 @@ describe('viteServerFactory', () => {
         reporters: ['coverage'],
       });
       const viteConfig = createServerMock.mock.calls[0][0];
-      expect(vitePluginIstanbul).toBeCalled();
+      expect(vitePluginIstanbul).toHaveBeenCalled();
       expect(viteConfig.plugins).toEqual(
         expect.objectContaining([{ name: 'vite:istanbul' }]),
       );
@@ -120,7 +120,7 @@ describe('viteServerFactory', () => {
           },
         },
       });
-      expect(vitePluginIstanbul).not.toBeCalled();
+      expect(vitePluginIstanbul).not.toHaveBeenCalled();
     });
 
     it('istanbulPlugin cwd config should be config.basePath if config.vite.coverage.cwd is not exist', async () => {
@@ -168,7 +168,7 @@ describe('viteServerFactory', () => {
       createServerMock.mockClear();
       void vite.restart();
       await vite.restart();
-      expect(createServerMock).toBeCalledTimes(1);
+      expect(createServerMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -179,26 +179,26 @@ describe('viteServerFactory', () => {
     });
 
     it('after the ws.send method is called with "update" type payload, the executor.schedule method should be called', () => {
-      expect(scheduleMock).not.toBeCalled();
+      expect(scheduleMock).not.toHaveBeenCalled();
       vite.ws.send({ type: 'full-reload' });
-      expect(scheduleMock).toBeCalled();
+      expect(scheduleMock).toHaveBeenCalled();
     });
 
     it('after the vite server restarted, the executor.schedule method should be called', async () => {
       await vite.restart();
-      expect(scheduleMock).toBeCalled();
+      expect(scheduleMock).toHaveBeenCalled();
     });
 
     it('after the vite server restart, the newServer should be intercepted again', async () => {
       let newServer = await vite.restart();
-      expect(scheduleMock).toBeCalledTimes(1);
+      expect(scheduleMock).toHaveBeenCalledTimes(1);
       newServer?.ws.send({ type: 'full-reload' });
-      expect(scheduleMock).toBeCalledTimes(2);
+      expect(scheduleMock).toHaveBeenCalledTimes(2);
 
       newServer = await newServer?.restart();
-      expect(scheduleMock).toBeCalledTimes(3);
+      expect(scheduleMock).toHaveBeenCalledTimes(3);
       newServer?.ws.send({ type: 'full-reload' });
-      expect(scheduleMock).toBeCalledTimes(4);
+      expect(scheduleMock).toHaveBeenCalledTimes(4);
     });
   });
 });

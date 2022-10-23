@@ -35,7 +35,7 @@ describe('beforeMiddlewareFactory', () => {
   it('should intercept the context.html which serve by karma and handle it over to vite', async () => {
     const server = await createServer();
     const response = await request(server).get(`${urlRoot}context.html`);
-    expect(viteTransformIndexHtmlMock).toBeCalledWith(
+    expect(viteTransformIndexHtmlMock).toHaveBeenCalledWith(
       '/__vite__/context.html',
       fallbackMsg,
     );
@@ -46,7 +46,7 @@ describe('beforeMiddlewareFactory', () => {
   it('should not intercept if request url has query param', async () => {
     const server = await createServer();
     await request(server).get(`${urlRoot}context.html?html-proxy&index=0.js`);
-    expect(viteTransformIndexHtmlMock).not.toBeCalled();
+    expect(viteTransformIndexHtmlMock).not.toHaveBeenCalled();
   });
 
   it('should not intercept other html which does not served by karma', async () => {

@@ -22,6 +22,6 @@ describe('viteClientMock', () => {
     jest.resetModules();
     require('@/public/viteClientMock');
 
-    expect(envMock).toBeCalled();
+    expect(envMock).toHaveBeenCalled();
   });
 });
