@@ -39,11 +39,11 @@ importers:
       typescript: ^4.8.4
       vite: ^3.1.8
       vite-plugin-dts: ^1.6.6
-      vite-plugin-istanbul: ^2.7.1
+      vite-plugin-istanbul: ^3.0.1
     dependencies:
       connect: 3.7.0
       local-pkg: 0.4.2
-      vite-plugin-istanbul: 2.9.0
+      vite-plugin-istanbul: 3.0.1
     devDependencies:
       '@babel/parser': 7.19.4
       '@babel/types': 7.19.4
@@ -6142,8 +6142,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-istanbul/2.9.0:
-    resolution: {integrity: sha512-b5h1C/rqnpAairKnu1feHHynZLbWpllxig349/BdN6Y5g9Cac+6o9Gz0FU0dtyEygGLJ8sjVhInx2U6NzrKmDA==}
+  /vite-plugin-istanbul/3.0.1:
+    resolution: {integrity: sha512-b6yBg7WHXHTaULcyb/d17/YXFcYrV6nHTiqYxOIhhbIFjgp8CgVkuP3iGQU1vRxeutrIwTa4pFNmS4uZSAKhGA==}
     dependencies:
       '@istanbuljs/load-nyc-config': 1.1.0
       istanbul-lib-instrument: 5.2.1

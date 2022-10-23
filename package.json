@@ -46,7 +46,7 @@
   "dependencies": {
     "connect": "^3.7.0",
     "local-pkg": "^0.4.2",
-    "vite-plugin-istanbul": "^2.7.1"
+    "vite-plugin-istanbul": "^3.0.1"
   },
   "devDependencies": {
     "@babel/parser": "^7.19.4",
