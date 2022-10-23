@@ -11,5 +11,7 @@ export const hashRE = /#.*$/s;
 export const cleanUrl = (url: string): string =>
   url.replace(hashRE, '').replace(queryRE, '');
 
-export const getViteVersion = (root: string) =>
-  getPackageInfoSync('vite', { paths: [root] })?.version || '3';
+export const getViteVersion = (root: string) => {
+  const version = getPackageInfoSync('vite', { paths: [root] })?.version || '3';
+  return version.startsWith('2.') ? 'vite2' : 'vite3';
+};
