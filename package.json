@@ -1,6 +1,6 @@
 {
   "name": "karma-vite",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A karma plugin. Transform es module by using vite.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
