@@ -5,6 +5,7 @@ import {
   viteMiddlewareMockMsg,
   viteNotHandleUrlPrefix,
   viteTransformRequestMock,
+  viteTransformRequestMsg,
 } from '@test/_utils/mockFn';
 import createInjector from '@test/_utils/createInjector';
 import { VITE_FS_PREFIX } from '@/constants';
@@ -88,10 +89,19 @@ describe('middlewareFactory', () => {
     expect(viteTransformRequestMock).toHaveBeenCalled();
   });
 
+  it('should not call next function if the request want to get @vite/client', async () => {
+    const response = await request(middleware)
+      .get(`${viteBase}@vite/client`)
+      .set('referer', `http://localhost${urlRoot}context.html`);
+    expect(viteTransformRequestMock).toHaveBeenCalled();
+    expect(response.text).toEqual(viteTransformRequestMsg);
+  });
+
   it('should not intercept that the request want to get @vite/client but the request referer header does not meet the conditions', async () => {
-    await request(middleware)
+    const response = await request(middleware)
       .get(`${viteBase}@vite/client`)
       .set('referer', `http://localhost${urlRoot}debug.html`);
     expect(viteTransformRequestMock).not.toHaveBeenCalled();
+    expect(response.text).toEqual(viteMiddlewareMockMsg);
   });
 });

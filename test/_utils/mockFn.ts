@@ -4,12 +4,15 @@ import type { ServerResponse } from 'http';
 import type { Connect, InlineConfig, ResolvedConfig } from 'vite';
 
 export const viteTransformIndexHtmlMsg = 'transformed';
+export const viteTransformRequestMsg = 'vite transformed request';
 export const viteMiddlewareMockMsg = 'vite handled';
 export const viteNotHandleUrlPrefix = '__vite_not_handle_url_prefix__';
 
 export const scheduleMock = jest.fn();
 export let viteCloseMock = jest.fn();
-export const viteTransformRequestMock = jest.fn();
+export const viteTransformRequestMock = jest.fn(() =>
+  Promise.resolve({ code: viteTransformRequestMsg }),
+);
 export const viteWsSendMock = jest.fn();
 export const viteTransformIndexHtmlMock = jest.fn(() =>
   Promise.resolve(viteTransformIndexHtmlMsg),

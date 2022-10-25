@@ -71,28 +71,49 @@ const viteClientMiddleware = (
   log: OriginLogger,
 ): Connect.NextHandleFunction => {
   return (req: IncomingMessage, res, next) => {
-    if (req.headers.referer && req.url === `${vite.config.base}@vite/client`) {
-      const refererUrl = new URL(req.headers.referer).pathname;
-      if (refererUrl.startsWith(urlRoot)) {
-        const url = refererUrl.replace(urlRoot, '/');
-        if (unwantedViteClientHtml.has(url)) {
-          log.debug(
-            `${url} is requesting vite client which will be mock by karma-vite because the request referer do not need hmr`,
-          );
-          void vite
-            .transformRequest(
-              `${VITE_FS_PREFIX.slice(0, 1)}${VITE_CLIENT_ENTRY}`,
-            )
-            .then((result) => {
-              if (result) {
-                res.setHeader('Content-Type', 'application/javascript');
-                res.end(result.code);
-              }
-            });
+    let shouldNext = true;
+    if (req.url === `${vite.config.base}@vite/client`) {
+      let refererUrl = undefined;
+      if (req.headers.referer) {
+        try {
+          refererUrl = new URL(req.headers.referer).pathname;
+        } catch {
+          // continue regardless of error
+          log.debug(`not valid referer header`, req.headers.referer);
         }
       }
+      const relativeRefererUrl = refererUrl?.replace(urlRoot, '/');
+      if (
+        refererUrl &&
+        refererUrl.startsWith(urlRoot) &&
+        relativeRefererUrl &&
+        unwantedViteClientHtml.has(relativeRefererUrl)
+      ) {
+        log.debug(
+          `${relativeRefererUrl} is requesting vite client which will be mock by karma-vite because the request referer do not need hmr`,
+        );
+        shouldNext = false;
+        void vite
+          .transformRequest(`${VITE_FS_PREFIX.slice(0, 1)}${VITE_CLIENT_ENTRY}`)
+          .then((result) => {
+            if (result) {
+              res.setHeader('Content-Type', 'application/javascript');
+              res.end(result.code);
+            } else {
+              log.debug(
+                `transformRequest by ${relativeRefererUrl} result get empty content`,
+                result,
+              );
+              next();
+            }
+          })
+          .catch((err) => {
+            log.debug(`transformRequest by ${relativeRefererUrl} error`, err);
+            next();
+          });
+      }
     }
-    next();
+    shouldNext && next();
   };
 };
 
