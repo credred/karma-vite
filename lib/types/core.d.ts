@@ -19,7 +19,7 @@ export interface KarmaViteConfig {
   /**
    * The vite version is automatically detected by default
    */
-  version?: 'vite2' | 'vite3';
+  version?: 'vite2' | 'vite3' | 'vite4';
   /**
    * @description The plugin can reporte coverage,
    * but it will only take effect after using karma coverage reporter like karma-coverage
