@@ -1,3 +1,8 @@
+/**
+ * We don't need hmr during the test.
+ * So we can override the vite client to remove the hmr.
+ */
+
 /* eslint-disable @typescript-eslint/no-empty-function */
 import type { ViteHotContext } from 'vite/types/hot';
 import { ErrorOverlay } from './overlay';
