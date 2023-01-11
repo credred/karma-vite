@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4 (_2023-01-11_)
+
+### Features
+
+- supports vite4
+
 ## 1.0.3 (_2022-10-26_)
 
 ### Fixes
