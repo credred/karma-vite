@@ -1,6 +1,6 @@
 {
   "name": "karma-vite",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A karma plugin. Transform es module by using vite.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -91,6 +91,6 @@
   },
   "peerDependencies": {
     "karma": "^6.0.0",
-    "vite": "2 || 3 || 4"
+    "vite": "2 || 3 || 4 || 5"
   }
 }
