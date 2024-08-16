@@ -1,4 +1,3 @@
-import { createServer, mergeConfig } from 'vite';
 import IstanbulPlugin from 'vite-plugin-istanbul';
 import type { FilePattern } from 'karma';
 import type { HMRPayload, InlineConfig, ViteDevServer } from 'vite';
@@ -63,6 +62,8 @@ async function resolveViteConfig(
   viteConfig = await (typeof viteConfig === 'function'
     ? (viteConfig = await viteConfig({ command: 'serve', mode: 'development' }))
     : viteConfig);
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+  const { mergeConfig } = await import('vite');
   return mergeConfig(viteConfig, inlineViteConfig);
 }
 
@@ -104,8 +105,9 @@ async function restartViteServer(
   server: ViteDevServerInternal,
   oldestServer: ViteDevServerInternal,
 ) {
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+  const { createServer, mergeConfig } = await import('vite');
   await server.close();
-
   let newServer = undefined;
   try {
     let inlineConfig = server.config.inlineConfig;
@@ -192,65 +194,68 @@ const viteServerFactory: DiFactory<
       entries: belongToViteFiles,
     },
   };
-  const inlineViteConfig = mergeConfig(baseViteConfig, versionViteConfig);
-  const viteProvider = resolveViteConfig(inlineViteConfig, config)
-    .then((config) => {
-      log.debug(`using resolved config: \n%O\n`, config);
-      return createServer(config);
-    })
-    .then((vite) => {
-      viteProvider.value = vite;
-      const interceptViteSend = (server: ViteDevServerInternal) => {
-        log.debug(`vite server ws send method was intercepted`);
-        const send = server.ws.send.bind(server.ws);
-        server.ws.send = (payload: HMRPayload) => {
-          log.debug(
-            `the wss send method of vite server was called with payload.type: `,
-            payload.type,
-          );
-          if (
-            // payload.path is '*' only after html changes, we don't need to listen for html file changes
-            // and this can load to infinite loops.
-            // for example, coverage reporter will generate html files after test. vite listens to the html being generated
-            // and sends the full-reload message. if we schedule test again, coverage reporter will generate html files again...
-            (payload.type === 'full-reload' && payload.path !== '*') ||
-            payload.type === 'update' ||
-            payload.type === 'prune' ||
-            payload.type === 'custom'
-          ) {
-            executor.schedule();
-          }
-          send(payload);
-        };
-      };
-      const interceptViteRestart = (server: ViteDevServerInternal) => {
-        log.debug(`vite server restart method was intercepted`);
-        const restart = server.restart.bind(server);
-        server.restart = async () => {
-          const newServer = await restart();
-          if (newServer) {
-            log.debug('vite server restarted');
-            rewriteViteServerRestart(
-              newServer,
-              vite as ViteDevServerInternal,
-              log,
+  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+  const viteProvider = import('vite').then(({ mergeConfig, createServer }) => {
+    const inlineViteConfig = mergeConfig(baseViteConfig, versionViteConfig);
+    return resolveViteConfig(inlineViteConfig, config)
+      .then((config) => {
+        log.debug(`using resolved config: \n%O\n`, config);
+        return createServer(config);
+      })
+      .then((vite) => {
+        viteProvider.value = vite;
+        const interceptViteSend = (server: ViteDevServerInternal) => {
+          log.debug(`vite server ws send method was intercepted`);
+          const send = server.ws.send.bind(server.ws);
+          server.ws.send = (payload: HMRPayload) => {
+            log.debug(
+              `the wss send method of vite server was called with payload.type: `,
+              payload.type,
             );
-            interceptViteSend(newServer);
-            interceptViteRestart(newServer);
-            executor.schedule();
-          }
-          return newServer;
+            if (
+              // payload.path is '*' only after html changes, we don't need to listen for html file changes
+              // and this can load to infinite loops.
+              // for example, coverage reporter will generate html files after test. vite listens to the html being generated
+              // and sends the full-reload message. if we schedule test again, coverage reporter will generate html files again...
+              (payload.type === 'full-reload' && payload.path !== '*') ||
+              payload.type === 'update' ||
+              payload.type === 'prune' ||
+              payload.type === 'custom'
+            ) {
+              executor.schedule();
+            }
+            send(payload);
+          };
         };
-      };
-      rewriteViteServerRestart(
-        vite as ViteDevServerInternal,
-        vite as ViteDevServerInternal,
-        log,
-      );
-      interceptViteSend(vite as ViteDevServerInternal);
-      interceptViteRestart(vite as ViteDevServerInternal);
-      return vite;
-    }) as ViteProvider;
+        const interceptViteRestart = (server: ViteDevServerInternal) => {
+          log.debug(`vite server restart method was intercepted`);
+          const restart = server.restart.bind(server);
+          server.restart = async () => {
+            const newServer = await restart();
+            if (newServer) {
+              log.debug('vite server restarted');
+              rewriteViteServerRestart(
+                newServer,
+                vite as ViteDevServerInternal,
+                log,
+              );
+              interceptViteSend(newServer);
+              interceptViteRestart(newServer);
+              executor.schedule();
+            }
+            return newServer;
+          };
+        };
+        rewriteViteServerRestart(
+          vite as ViteDevServerInternal,
+          vite as ViteDevServerInternal,
+          log,
+        );
+        interceptViteSend(vite as ViteDevServerInternal);
+        interceptViteRestart(vite as ViteDevServerInternal);
+        return vite;
+      });
+  }) as ViteProvider;
   viteProvider.value = undefined;
 
   return viteProvider;

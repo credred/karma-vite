@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { build, mergeConfig } from 'vite';
 import { cac } from 'cac';
 import rimraf from 'rimraf';
 import dts from 'vite-plugin-dts';
@@ -51,6 +50,9 @@ cli
       rimraf.sync(path.join(root ? path.resolve(root, outDir) : outDir, '/*'));
 
     console.log(chalk.bgBlue('building core...'));
+    // eslint-disable-next-line node/no-unsupported-features/es-syntax
+    const { build, mergeConfig } = await import('vite');
+
     await build(
       mergeConfig(commonConfig, {
         root,
